@@ -24,7 +24,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 0 15px;
         }
@@ -308,7 +308,7 @@
             position: fixed;
             left: -10000px;
             top: -10000px;
-            width: 794px;
+            width: 844px; /* زيادة 50 مم للعرض */
             height: 1123px;
             background: white;
             padding: 10px;
@@ -895,6 +895,7 @@
                     
                     <div class="form-group" style="flex: 1 1 200px; align-self: flex-end;">
                         <button type="button" id="generate-statement" class="btn">عرض كشف الحساب</button>
+                        <button type="button" id="save-pdf-btn" class="btn" style="margin-right: 10px;">تصدير PDF</button>
                     </div>
                 </div>
             </div>
@@ -940,10 +941,6 @@
                         <!-- سيتم عرض تفاصيل كشف الحساب هنا -->
                     </tbody>
                 </table>
-                
-                <div style="margin-top: 25px; text-align: left;">
-                    <button type="button" id="save-pdf-btn" class="btn">تحويل إلى PDF</button>
-                </div>
             </div>
         </div>
         
@@ -958,7 +955,7 @@
                     <div class="form-group" style="flex: 1 1 400px;">
                         <label for="report-project">المشروع *</label>
                         <div class="search-container">
-                            <input type="text" id="report-project" class="form-control" required placeholder="ابحث عن مشروع">
+                            <input type="text" id="report-project" class="form-control" required placeholder="ابحق عن مشروع">
                             <div id="report-project-search-results" class="search-results"></div>
                         </div>
                     </div>
@@ -1062,6 +1059,8 @@
                     <div class="backup-container">
                         <button type="button" id="export-backup" class="btn btn-success">تصدير نسخة احتياطية</button>
                         <button type="button" id="export-json" class="btn">تصدير كملف JSON</button>
+                        <button type="button" id="sync-google-sheets" class="btn">مزامنة مع Google Sheets</button>
+<button type="button" id="load-from-sheets" class="btn">تحميل من Google Sheets</button>
                     </div>
                 </div>
                 
@@ -1156,13 +1155,11 @@
                         <th width="28%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">البيان</th>
                         <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">مدين</th>
                         <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">دائن</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">الرصيد</th>
+                        <th width="14%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">الرصيد</th>
                     </tr>
                 </thead>
                 <tbody id="pdf-table-body" style="font-size: 9px;">
                 </tbody>
-                <tfoot id="pdf-totals" style="font-size: 11px; font-weight: bold;">
-                </tfoot>
             </table>
         </div>
     </div>
@@ -1174,6 +1171,8 @@
     </div>
     
     <script>
+        // رابط Google Apps Script - ضع رابط النشر هنا بعد نشره
+        const GOOGLE_SCRIPT_URL = "hhttps://script.google.com/macros/s/AKfycbwIdXD-n78A9zTi18gWTFtJQkThGtaTsMJc-j1mSq1RUms60RrqRtwLyfeSL9GodDc2/exec";        
         // البيانات المخزنة في localStorage
         let data = {
             projects: [],
@@ -1190,10 +1189,8 @@
             updateDashboardStats();
             updateBackupStats();
             
-            // إضافة بعض البيانات الأولية إذا لم يكن هناك بيانات
-            if (data.projects.length === 0) {
-                initializeSampleData();
-            }
+            // عدم محاولة تحميل البيانات من Google Sheets تلقائياً
+            // loadFromGoogleSheets();
             
             renderProjects();
             renderRevenues();
@@ -1205,7 +1202,11 @@
         function loadData() {
             const savedData = localStorage.getItem('constructionCompanyData');
             if (savedData) {
-                data = JSON.parse(savedData);
+                try {
+                    data = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Error parsing saved data:', e);
+                }
             }
         }
 
@@ -1216,39 +1217,111 @@
             updateBackupStats();
         }
 
-        // تهيئة بيانات عينة
-        function initializeSampleData() {
-            // عملاء عينة
-            data.customers = [
-                { id: 1, name: "أحمد العلي", phone: "96512345678", email: "ahmed@example.com", address: "الكويت - حولي", notes: "" },
-                { id: 2, name: "خالد الرشيد", phone: "9651111111", email: "khaled@example.com", address: "الكويت - السالمية", notes: "" },
-                { id: 3, name: "شركة ياسر ", phone: "96567011143", email: "yasser@yasser.com", address: "الكويت - حولي", notes: "شركة مقاولات" }
-            ];
+        // حفظ البيانات إلى Google Sheets
+        async function saveToGoogleSheets() {
+            if (!GOOGLE_SCRIPT_URL) {
+                showAlert('رابط Google Sheets غير مضبوط', 'error', 'backup-alert');
+                return;
+            }
             
-            // مشاريع عينة
-            data.projects = [
-                { id: 1, name: "فيلا سكنية في السالمية", customer: "أحمد العلي", description: "بناء فيلا سكنية على مساحة 500 م²", startDate: "2026-01-15", endDate: "2026-10-30", budget: 250000, status: "جاري" },
-                { id: 2, name: "عمارة سكنية في حولي", customer: "خالد الرشيد", description: "إنشاء عمارة سكنية 6 أدوار", startDate: "2026-03-01", endDate: "2027-01-31", budget: 500000, status: "جاري" },
-                { id: 3, name: "مبنى تجاري في الشويخ", customer: "شركة شركة ياسر", description: "تشطيب مبنى تجاري 8 طوابق", startDate: "2026-06-10", endDate: "2027-03-15", budget: 750000, status: "جاري" }
-            ];
+            try {
+                showAlert('جاري حفظ البيانات إلى Google Sheets...', 'success', 'backup-alert');
+                
+                const payload = {
+                    action: 'save_all',
+                    projects: data.projects,
+                    revenues: data.revenues,
+                    expenses: data.expenses,
+                    customers: data.customers,
+                    timestamp: new Date().toISOString()
+                };
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`تم حفظ البيانات إلى Google Sheets بنجاح`, 'success', 'backup-alert');
+                } else {
+                    showAlert('خطأ في حفظ البيانات: ' + result.error, 'error', 'backup-alert');
+                }
+                
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                showAlert('خطأ في الاتصال بـ Google Sheets: ' + error.message, 'error', 'backup-alert');
+            }
+        }
+
+        // تحميل البيانات من Google Sheets
+        async function loadFromGoogleSheets() {
+            if (!GOOGLE_SCRIPT_URL) {
+                showAlert('رابط Google Sheets غير مضبوط', 'error', 'backup-alert');
+                return;
+            }
             
-            // إيرادات عينة
-            data.revenues = [
-                { id: 1, projectId: 1, amount: 50000, date: "2026-02-15", invoice: "INV-2026-001", description: "دفعة أولى للمشروع" },
-                { id: 2, projectId: 1, amount: 30000, date: "2026-05-20", invoice: "INV-2026-002", description: "دفعة ثانية" },
-                { id: 3, projectId: 2, amount: 100000, date: "2026-04-01", invoice: "INV-2026-003", description: "دفعة أولى للمشروع" },
-                { id: 4, projectId: 3, amount: 150000, date: "2026-07-05", invoice: "INV-2026-004", description: "دفعة أولى للمشروع" }
-            ];
-            
-            // مصروفات عينة
-            data.expenses = [
-                { id: 1, projectId: 1, amount: 20000, date: "2026-03-10", category: "مواد بناء", description: "شراء أسمنت وحديد" },
-                { id: 2, projectId: 1, amount: 15000, date: "2026-04-05", category: "أجور عمال", description: "رواتب شهر مارس" },
-                { id: 3, projectId: 2, amount: 40000, date: "2026-04-15", category: "معدات", description: "إيجار معدات" },
-                { id: 4, projectId: 3, amount: 60000, date: "2026-07-20", category: "مواد بناء", description: "شراء مواد تشطيب" }
-            ];
-            
-            saveData();
+            try {
+                showAlert('جاري تحميل البيانات من Google Sheets...', 'success', 'backup-alert');
+                
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&timestamp=${new Date().getTime()}`, {
+                    method: 'GET'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const remoteData = await response.json();
+                
+                if (remoteData.projects && Array.isArray(remoteData.projects)) {
+                    data.projects = remoteData.projects || [];
+                    data.revenues = remoteData.revenues || [];
+                    data.expenses = remoteData.expenses || [];
+                    data.customers = remoteData.customers || [];
+                    
+                    saveData();
+                    renderProjects();
+                    renderRevenues();
+                    renderExpenses();
+                    renderCustomers();
+                    updateDashboardStats();
+                    
+                    showAlert('تم تحميل البيانات بنجاح', 'success', 'backup-alert');
+                } else {
+                    showAlert('لا توجد بيانات في Google Sheets', 'error', 'backup-alert');
+                }
+                
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+                showAlert('خطأ في تحميل البيانات من Google Sheets. تحقق من اتصال الإنترنت ورابط Google Sheets', 'error', 'backup-alert');
+            }
+        }
+
+        // تحويل أنواع البيانات
+        function convertTypes(obj) {
+            const result = {};
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    let value = obj[key];
+                    
+                    // تحويل الأرقام
+                    if (!isNaN(value) && value !== '' && value !== null) {
+                        value = Number(value);
+                    }
+                    
+                    result[key] = value;
+                }
+            }
+            return result;
         }
 
         // إعداد مستمعي الأحداث
@@ -1314,12 +1387,14 @@
             // النسخ الاحتياطي
             document.getElementById('export-backup').addEventListener('click', exportBackup);
             document.getElementById('export-json').addEventListener('click', exportAsJSON);
+            document.getElementById('sync-google-sheets').addEventListener('click', saveToGoogleSheets);
             document.getElementById('choose-file-btn').addEventListener('click', function() {
-                document.getElementById('restore-file').click();
+            document.getElementById('restore-file').click();
             });
             document.getElementById('restore-file').addEventListener('change', handleFileSelect);
             document.getElementById('restore-backup').addEventListener('click', restoreBackup);
             document.getElementById('delete-all-data').addEventListener('click', deleteAllData);
+            document.getElementById('load-from-sheets').addEventListener('click', loadFromGoogleSheets);
             
             // إغلاق نتائج البحث عند النقر خارجها
             document.addEventListener('click', function(e) {
@@ -2062,11 +2137,16 @@
             statementDetails.innerHTML = '';
             
             let balance = 0;
+            let totalDebit = 0;
+            let totalCredit = 0;
+            
             transactions.forEach(transaction => {
                 if (transaction.type === 'revenue') {
                     balance += transaction.amount;
+                    totalCredit += transaction.amount;
                 } else {
                     balance -= transaction.amount;
+                    totalDebit += transaction.amount;
                 }
                 
                 const row = document.createElement('tr');
@@ -2221,16 +2301,32 @@
                 
                 // نسخ الصفوف
                 const rows = statementDetails.querySelectorAll('tr');
-                rows.forEach(row => {
+                let totalDebit = 0;
+                let totalCredit = 0;
+                let finalBalance = 0;
+                
+                rows.forEach((row, index) => {
                     const pdfRow = document.createElement('tr');
                     
                     // نسخ الخلايا
                     const cells = row.querySelectorAll('td');
-                    cells.forEach(cell => {
+                    cells.forEach((cell, cellIndex) => {
                         const pdfCell = document.createElement('td');
                         pdfCell.style.padding = '4px';
                         pdfCell.style.border = '1px solid #000';
                         pdfCell.style.textAlign = 'center';
+                        
+                        // حساب الإجماليات
+                        if (cellIndex === 5 && cell.textContent !== '0.000') {
+                            totalDebit += parseFloat(cell.textContent.replace(/[^0-9.]/g, '') || 0);
+                        }
+                        if (cellIndex === 6 && cell.textContent !== '0.000') {
+                            totalCredit += parseFloat(cell.textContent.replace(/[^0-9.]/g, '') || 0);
+                        }
+                        if (cellIndex === 7 && index === rows.length - 1) {
+                            finalBalance = parseFloat(cell.textContent.replace(/[^0-9.]/g, '') || 0);
+                        }
+                        
                         pdfCell.textContent = cell.textContent;
                         pdfRow.appendChild(pdfCell);
                     });
@@ -2238,16 +2334,17 @@
                     pdfTableBody.appendChild(pdfRow);
                 });
                 
-                // إضافة الإجماليات
+                // إضافة الإجماليات في نهاية الجدول
                 const totalsRow = document.createElement('tr');
+                totalsRow.style.backgroundColor = '#d32f2f';
+                totalsRow.style.color = 'white';
                 totalsRow.innerHTML = `
                     <td colspan="5" style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">الإجمالي</td>
-                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${document.querySelector('#statement-details tr:last-child td:nth-child(6)')?.textContent || '0.000'}</td>
-                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${document.querySelector('#statement-details tr:last-child td:nth-child(7)')?.textContent || '0.000'}</td>
-                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${document.querySelector('#statement-details tr:last-child td:nth-child(8)')?.textContent || '0.000'}</td>
+                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${formatCurrency(totalDebit)}</td>
+                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${formatCurrency(totalCredit)}</td>
+                    <td style="padding: 4px; border: 1px solid #000; text-align: center; font-weight: bold;">${formatCurrency(finalBalance)}</td>
                 `;
-                document.getElementById('pdf-totals').innerHTML = '';
-                document.getElementById('pdf-totals').appendChild(totalsRow);
+                pdfTableBody.appendChild(totalsRow);
                 
                 const element = document.getElementById('pdf-template');
                 
@@ -2264,7 +2361,7 @@
                 element.style.position = 'fixed';
                 element.style.left = '0';
                 element.style.top = '0';
-                element.style.width = '794px';
+                element.style.width = '844px';
                 element.style.height = '1123px';
                 element.style.zIndex = '10000';
                 element.style.background = 'white';
@@ -2276,9 +2373,9 @@
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#FFFFFF',
-                    width: 794,
+                    width: 844,
                     height: 1123,
-                    windowWidth: 794,
+                    windowWidth: 844,
                     windowHeight: 1123
                 });
                 
