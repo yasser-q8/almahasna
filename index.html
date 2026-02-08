@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة شركة المحاسنة لتشييد المباني</title>
+    <link rel="icon" href="https://i.postimg.cc/3xZmVcrP/YASR.jpg" type="image/jpeg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,7 +31,7 @@
         
         /* الترويسة */
         header {
-            background-color: #1a73e8;
+            background-color: #d32f2f;
             color: white;
             padding: 15px 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -105,7 +106,7 @@
         }
         
         .page-title {
-            color: #1a73e8;
+            color: #d32f2f;
             margin-bottom: 25px;
             padding-bottom: 10px;
             border-bottom: 2px solid #e8f4f8;
@@ -151,13 +152,13 @@
         
         .form-control:focus {
             outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
         }
         
         .btn {
             padding: 12px 25px;
-            background-color: #1a73e8;
+            background-color: #d32f2f;
             color: white;
             border: none;
             border-radius: 5px;
@@ -169,7 +170,7 @@
         }
         
         .btn:hover {
-            background-color: #0d62d9;
+            background-color: #b71c1c;
         }
         
         .btn-secondary {
@@ -205,7 +206,7 @@
         }
         
         .data-table th {
-            background-color: #1a73e8;
+            background-color: #d32f2f;
             color: white;
             text-align: right;
             padding: 12px 15px;
@@ -293,7 +294,7 @@
         .stat-value {
             font-size: 32px;
             font-weight: 700;
-            color: #1a73e8;
+            color: #d32f2f;
             margin: 10px 0;
         }
         
@@ -397,6 +398,67 @@
             display: none;
         }
         
+        /* توقيع المطور */
+        .signature-card {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #FF6E00, #2196F3);
+            color: white;
+            padding: 10.5px 17.5px;
+            border-radius: 8.5px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .signature-card:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4); 
+        }
+        
+        @keyframes float { 
+            0% { transform: translateY(0px); } 
+            50% { transform: translateY(-15px); } 
+            100% { transform: translateY(0px); } 
+        }
+        
+        .signature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #80EF80, #2196F3);
+            border-radius: 14px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            background-size: 400%;
+        }
+        
+        @keyframes borderGlow { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+        
+        .signature-card .name { 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3); 
+        }
+        
+        .signature-card .title { 
+            font-size: 0.7rem; 
+            opacity: 0.9; 
+            font-weight: 500; 
+        }
+        
         /* تصميم متجاوب */
         @media (max-width: 768px) {
             .header-content {
@@ -427,6 +489,24 @@
             
             .backup-container {
                 flex-direction: column;
+            }
+            
+            .signature-card { 
+                position: relative; 
+                bottom: auto; 
+                left: auto; 
+                margin: 20px auto 0; 
+                width: fit-content; 
+                animation: none; 
+            } 
+            .signature-card:hover { 
+                transform: none; 
+            } 
+        }
+        
+        @media print {
+            .signature-card {
+                display: none;
             }
         }
     </style>
@@ -478,7 +558,7 @@
             </div>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">نظرة سريعة على النظام</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">نظرة سريعة على النظام</h3>
                 <p>مرحباً بك في نظام إدارة شركة المحاسنة لتشييد المباني. يمكنك من خلال هذا النظام:</p>
                 <ul style="margin-top: 15px; padding-right: 20px;">
                     <li>تسجيل وإدارة مشاريع المقاولات</li>
@@ -497,7 +577,7 @@
             <h2 class="page-title">إدارة المشاريع</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">إضافة / تعديل مشروع</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">إضافة / تعديل مشروع</h3>
                 <div id="project-alert" class="alert"></div>
                 
                 <form id="project-form">
@@ -544,7 +624,7 @@
                 </form>
             </div>
             
-            <h3 style="color: #1a73e8; margin-bottom: 15px;">قائمة المشاريع</h3>
+            <h3 style="color: #d32f2f; margin-bottom: 15px;">قائمة المشاريع</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -567,7 +647,7 @@
             <h2 class="page-title">إدارة الإيرادات</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">تسجيل إيراد جديد</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">تسجيل إيراد جديد</h3>
                 <div id="revenue-alert" class="alert"></div>
                 
                 <form id="revenue-form">
@@ -625,7 +705,7 @@
                 </form>
             </div>
             
-            <h3 style="color: #1a73e8; margin-bottom: 15px;">سجل الإيرادات</h3>
+            <h3 style="color: #d32f2f; margin-bottom: 15px;">سجل الإيرادات</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -648,7 +728,7 @@
             <h2 class="page-title">إدارة المصروفات</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">تسجيل مصروف جديد</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">تسجيل مصروف جديد</h3>
                 <div id="expense-alert" class="alert"></div>
                 
                 <form id="expense-form">
@@ -699,7 +779,7 @@
                 </form>
             </div>
             
-            <h3 style="color: #1a73e8; margin-bottom: 15px;">سجل المصروفات</h3>
+            <h3 style="color: #d32f2f; margin-bottom: 15px;">سجل المصروفات</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -722,7 +802,7 @@
             <h2 class="page-title">إدارة العملاء</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">إضافة / تعديل عميل</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">إضافة / تعديل عميل</h3>
                 <div id="customer-alert" class="alert"></div>
                 
                 <form id="customer-form">
@@ -762,7 +842,7 @@
                 </form>
             </div>
             
-            <h3 style="color: #1a73e8; margin-bottom: 15px;">قائمة العملاء</h3>
+            <h3 style="color: #d32f2f; margin-bottom: 15px;">قائمة العملاء</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -784,7 +864,7 @@
             <h2 class="page-title">كشوف حساب العملاء</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">معايير كشف الحساب</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">معايير كشف الحساب</h3>
                 
                 <div class="filters-container">
                     <div class="form-group" style="flex: 1 1 300px;">
@@ -820,17 +900,17 @@
             </div>
             
             <div id="statement-results">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">نتائج كشف الحساب</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">نتائج كشف الحساب</h3>
                 <div id="statement-summary" style="margin-bottom: 20px; padding: 15px; background-color: #f8fbff; border-radius: 8px;">
                     <!-- سيتم عرض ملخص كشف الحساب هنا -->
                 </div>
                 
                 <div id="project-total-info" style="margin-bottom: 20px; padding: 15px; background-color: #f0f8ff; border-radius: 8px; display: none;">
-                    <h4 style="color: #1a73e8; margin-bottom: 10px;">إجماليات المشروع</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 10px;">إجماليات المشروع</h4>
                     <div style="display: flex; flex-wrap: wrap; gap: 20px;">
                         <div style="flex: 1 1 200px;">
                             <span style="font-weight: bold;">قيمة المشروع بالكامل:</span> 
-                            <span id="project-total-value-display" style="font-weight: bold; color: #1a73e8;">0 د.ك</span>
+                            <span id="project-total-value-display" style="font-weight: bold; color: #d32f2f;">0 د.ك</span>
                         </div>
                         <div style="flex: 1 1 200px;">
                             <span style="font-weight: bold;">الدفعات المستلمة:</span> 
@@ -872,7 +952,7 @@
             <h2 class="page-title">تقارير أرباح المشاريع</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">بحث عن مشروع</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">بحث عن مشروع</h3>
                 
                 <div class="filters-container">
                     <div class="form-group" style="flex: 1 1 400px;">
@@ -890,10 +970,10 @@
             </div>
             
             <div id="report-results" class="report-results" style="display: none;">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">تقرير ربح المشروع</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">تقرير ربح المشروع</h3>
                 
                 <div class="report-card">
-                    <h4 id="report-project-name" style="color: #1a73e8; margin-bottom: 20px;">اسم المشروع</h4>
+                    <h4 id="report-project-name" style="color: #d32f2f; margin-bottom: 20px;">اسم المشروع</h4>
                     
                     <div class="report-row">
                         <div class="report-label">إجمالي قيمة المشروع:</div>
@@ -932,7 +1012,7 @@
                 </div>
                 
                 <div style="margin-top: 25px;">
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">تفاصيل الإيرادات</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">تفاصيل الإيرادات</h4>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -949,7 +1029,7 @@
                 </div>
                 
                 <div style="margin-top: 25px;">
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">تفاصيل المصروفات</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">تفاصيل المصروفات</h4>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -972,12 +1052,12 @@
             <h2 class="page-title">النسخ الاحتياطي والاستعادة</h2>
             
             <div class="form-container">
-                <h3 style="color: #1a73e8; margin-bottom: 15px;">تصدير واستعادة البيانات</h3>
+                <h3 style="color: #d32f2f; margin-bottom: 15px;">تصدير واستعادة البيانات</h3>
                 
                 <div class="alert" id="backup-alert"></div>
                 
                 <div style="margin-bottom: 25px;">
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">تصدير البيانات</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">تصدير البيانات</h4>
                     <p>يمكنك تصدير جميع بيانات النظام إلى ملف احتياطي على جهاز الكمبيوتر الخاص بك.</p>
                     <div class="backup-container">
                         <button type="button" id="export-backup" class="btn btn-success">تصدير نسخة احتياطية</button>
@@ -986,7 +1066,7 @@
                 </div>
                 
                 <div style="margin-bottom: 25px;">
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">استعادة البيانات</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">استعادة البيانات</h4>
                     <p>يمكنك استعادة البيانات من ملف احتياطي سابق. يرجى التأكد من أن الملف من نفس النظام.</p>
                     <div class="backup-container">
                         <input type="file" id="restore-file" class="file-input" accept=".json,.txt">
@@ -997,7 +1077,7 @@
                 </div>
                 
                 <div style="margin-bottom: 25px;">
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">إحصائيات البيانات الحالية</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">إحصائيات البيانات الحالية</h4>
                     <div class="stats-container" style="margin-top: 15px;">
                         <div class="stat-card">
                             <div class="stat-label">عدد المشاريع</div>
@@ -1019,7 +1099,7 @@
                 </div>
                 
                 <div>
-                    <h4 style="color: #1a73e8; margin-bottom: 15px;">حذف جميع البيانات</h4>
+                    <h4 style="color: #d32f2f; margin-bottom: 15px;">حذف جميع البيانات</h4>
                     <p>تحذير: هذه العملية غير قابلة للاسترجاع. سيتم حذف جميع البيانات من النظام.</p>
                     <button type="button" id="delete-all-data" class="btn btn-danger">حذف جميع البيانات</button>
                 </div>
@@ -1032,12 +1112,12 @@
                 <div class="pdf-header-row" style="text-align: center;">
                     <div style="text-align: center; margin-bottom: 10px;">
                         <img src="https://i.postimg.cc/3xZmVcrP/YASR.jpg" alt="شعار الشركة" 
-                             style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a90e2; margin-bottom: 5px; margin: 0 auto 5px; display: block;">
-                        <h2 style="color: #4a90e2; margin: 0; font-size: 18px;">
+                             style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #d32f2f; margin-bottom: 5px; margin: 0 auto 5px; display: block;">
+                        <h2 style="color: #d32f2f; margin: 0; font-size: 18px;">
                             شركة المحاسنة لتشييد المباني
                         </h2>
                     </div>
-                    <h3 style="color: #4a90e2; margin: 0 0 8px 0; font-size: 16px;">كشف حساب عميل</h3>
+                    <h3 style="color: #d32f2f; margin: 0 0 8px 0; font-size: 16px;">كشف حساب عميل</h3>
                     <div style="margin-bottom: 8px; text-align: center;">
                         <div style="font-size: 14px; font-weight: bold; display: inline-block;">
                             اسم العميل: <span id="pdf-customer-name"></span>
@@ -1058,7 +1138,7 @@
             </div>
             
             <div id="pdf-project-total-info" style="margin-bottom: 10px; padding: 8px; background: #f0f8ff; border-radius: 4px; font-size: 11px; padding-left: 30px; display: none;">
-                <h4 style="color: #4a90e2; margin: 0 0 5px 0; font-size: 12px;">إجماليات المشروع</h4>
+                <h4 style="color: #d32f2f; margin: 0 0 5px 0; font-size: 12px;">إجماليات المشروع</h4>
                 <div style="display: flex; justify-content: space-between;">
                     <div>قيمة المشروع: <span id="pdf-project-total-value">0 د.ك</span></div>
                     <div>الدفعات المستلمة: <span id="pdf-project-received">0 د.ك</span></div>
@@ -1069,14 +1149,14 @@
             <table class="statement-table" id="pdf-statement-table" style="font-size: 10px; border-collapse: collapse; width: calc(100% - 40px); margin-left: 30px;">
                 <thead>
                     <tr>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">التاريخ</th>
-                        <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">رقم الفاتورة</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">رقم السند</th>
-                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">المشروع</th>
-                        <th width="28%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">البيان</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">مدين</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">دائن</th>
-                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #4a90e2; color: white;">الرصيد</th>
+                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">التاريخ</th>
+                        <th width="6%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">رقم الفاتورة</th>
+                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">رقم السند</th>
+                        <th width="8%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">المشروع</th>
+                        <th width="28%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">البيان</th>
+                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">مدين</th>
+                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">دائن</th>
+                        <th width="9%" style="padding: 4px; border: 1px solid #000; text-align: center; background: #d32f2f; color: white;">الرصيد</th>
                     </tr>
                 </thead>
                 <tbody id="pdf-table-body" style="font-size: 9px;">
@@ -1085,6 +1165,12 @@
                 </tfoot>
             </table>
         </div>
+    </div>
+    
+    <!-- توقيع المطور -->
+    <div class="signature-card">
+        <div class="name">Yasser Elkhateeb</div>
+        <div class="title">مطور البرنامج 67011143</div>
     </div>
     
     <script>
@@ -1135,15 +1221,15 @@
             // عملاء عينة
             data.customers = [
                 { id: 1, name: "أحمد العلي", phone: "96512345678", email: "ahmed@example.com", address: "الكويت - حولي", notes: "" },
-                { id: 2, name: "خالد الرشيد", phone: "96598765432", email: "khaled@example.com", address: "الكويت - السالمية", notes: "" },
-                { id: 3, name: "شركة التعمير الكويتية", phone: "96522334455", email: "altaamir@example.com", address: "الكويت - الشويخ", notes: "شركة مقاولات" }
+                { id: 2, name: "خالد الرشيد", phone: "9651111111", email: "khaled@example.com", address: "الكويت - السالمية", notes: "" },
+                { id: 3, name: "شركة ياسر ", phone: "96567011143", email: "yasser@yasser.com", address: "الكويت - حولي", notes: "شركة مقاولات" }
             ];
             
             // مشاريع عينة
             data.projects = [
                 { id: 1, name: "فيلا سكنية في السالمية", customer: "أحمد العلي", description: "بناء فيلا سكنية على مساحة 500 م²", startDate: "2026-01-15", endDate: "2026-10-30", budget: 250000, status: "جاري" },
                 { id: 2, name: "عمارة سكنية في حولي", customer: "خالد الرشيد", description: "إنشاء عمارة سكنية 6 أدوار", startDate: "2026-03-01", endDate: "2027-01-31", budget: 500000, status: "جاري" },
-                { id: 3, name: "مبنى تجاري في الشويخ", customer: "شركة التعمير الكويتية", description: "تشطيب مبنى تجاري 8 طوابق", startDate: "2026-06-10", endDate: "2027-03-15", budget: 750000, status: "جاري" }
+                { id: 3, name: "مبنى تجاري في الشويخ", customer: "شركة شركة ياسر", description: "تشطيب مبنى تجاري 8 طوابق", startDate: "2026-06-10", endDate: "2027-03-15", budget: 750000, status: "جاري" }
             ];
             
             // إيرادات عينة
