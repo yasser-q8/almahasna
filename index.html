@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة شركة المحاسنة لتشييد المباني</title>
-    <link rel="icon" href="https://i.postimg.cc/3xZmVcrP/YASR.jpg" type="image/jpeg">
+    <link rel="icon" href="https://i.postimg.cc/JnHWjhkL/logo2.png" type="image/png">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -15,11 +17,12 @@
         header { background-color: #d32f2f; color: white; padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; gap: 15px; }
-        .logo img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; }
+        .logo img { width: 62.5px; height: 62.5px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
         .logo h1 { font-size: 22px; font-weight: 600; }
         nav ul { display: flex; list-style: none; gap: 20px; }
         nav ul li a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; transition: background-color 0.3s; font-weight: 500; }
-        nav ul li a:hover, nav ul li a.active { background-color: rgba(255,255,255,0.2); }
+        nav ul li a:hover { background-color: rgba(255,255,255,0.2); }
+        nav ul li a.active { background-color: #007BFF; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .tab-content { padding: 25px; display: none; }
         .tab-content.active { display: block; }
         .page-title { color: #d32f2f; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid #e8f4f8; font-size: 24px; }
@@ -56,17 +59,64 @@
         .alert { padding: 12px 15px; border-radius: 5px; margin-bottom: 20px; display: none; }
         .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .filters-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; padding: 15px; background-color: #f8fbff; border-radius: 8px; }
+        .filters-container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; padding: 15px; background-color: #f8fbff; border-radius: 8px; align-items: flex-end; }
+        .filters-container .form-group.large-field { flex: 2 1 300px; }
+        .filters-container .form-group.small-field { flex: 1 1 150px; }
         .report-results { margin-top: 30px; }
         .report-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; text-align: center; }
+        .summary-item { background: #f8fbff; padding: 12px; border-radius: 8px; border-right: 4px solid #d32f2f; }
+        .summary-label { font-weight: 600; color: #555; font-size: 0.9rem; }
+        .summary-value { font-size: 1.2rem; font-weight: 700; color: #d32f2f; margin-top: 5px; }
         .report-row { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .positive { color: #28a745; }
         .negative { color: #dc3545; }
         .backup-container { display: flex; gap: 15px; margin-top: 20px; }
         .file-input { display: none; }
-        .signature-card { position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #FF6E00, #2196F3); color: white; padding: 10.5px 17.5px; border-radius: 8.5px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.8rem; font-weight: 600; z-index: 1000; animation: float 6s ease-in-out infinite; transition: all 0.3s ease; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); }
+        .signature-card {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #FF6E00, #2196F3);
+            color: white;
+            padding: 10.5px 17.5px;
+            border-radius: 8.5px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.2);
+            text-decoration: none;
+            color: inherit;
+            display: inline-block;
+        }
+        .signature-card:hover { transform: scale(1.05); box-shadow: 0 12px 35px rgba(0,0,0,0.4); }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-        @media (max-width: 768px) { .header-content { flex-direction: column; gap: 15px; } nav ul { flex-wrap: wrap; justify-content: center; } .signature-card { position: relative; bottom: auto; left: auto; margin: 20px auto 0; width: fit-content; animation: none; } }
+        .signature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #80EF80, #2196F3);
+            border-radius: 14px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            background-size: 400%;
+        }
+        @keyframes borderGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .signature-card .name { font-size: 0.95rem; font-weight: 700; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .signature-card .title { font-size: 0.7rem; opacity: 0.9; font-weight: 500; }
+        @media (max-width: 768px) { 
+            .header-content { flex-direction: column; gap: 15px; } 
+            nav ul { flex-wrap: wrap; justify-content: center; } 
+            .filters-container .form-group.large-field, .filters-container .form-group.small-field { flex: 1 1 100%; }
+            .signature-card { position: relative; bottom: auto; left: auto; margin: 20px auto 0; width: fit-content; animation: none; } 
+            .signature-card:hover { transform: none; }
+            .summary-grid { grid-template-columns: repeat(2,1fr); }
+        }
         @media print { .signature-card { display: none; } }
     </style>
 </head>
@@ -93,7 +143,6 @@
     </header>
     
     <div class="container">
-        <!-- Dashboard -->
         <div id="dashboard" class="tab-content active">
             <h2 class="page-title">لوحة التحكم</h2>
             <div class="stats-container">
@@ -102,14 +151,9 @@
                 <div class="stat-card"><div class="stat-label">إجمالي المصروفات</div><div class="stat-value" id="total-expenses">0 د.ك</div></div>
                 <div class="stat-card"><div class="stat-label">صافي الربح</div><div class="stat-value" id="net-profit">0 د.ك</div></div>
             </div>
-            <div class="form-container">
-                <h3 style="color:#d32f2f">نظرة سريعة على النظام</h3>
-                <p>مرحباً بك في نظام إدارة شركة المحاسنة لتشييد المباني. يمكنك من خلال هذا النظام:</p>
-                <ul style="margin-top:15px; padding-right:20px;"><li>تسجيل وإدارة مشاريع المقاولات</li><li>تسجيل إيرادات ومصروفات كل مشروع</li><li>إدارة بيانات العملاء</li><li>إصدار كشوف حساب للعملاء مع تصدير PDF متعدد الصفحات</li><li>تحليل أرباح المشاريع وتقارير الأداء مع تصدير PDF متعدد الصفحات</li></ul>
-            </div>
+            <div class="form-container"><h3 style="color:#d32f2f">نظرة سريعة على النظام</h3><p>مرحباً بك في نظام إدارة شركة المحاسنة لتشييد المباني.</p></div>
         </div>
         
-        <!-- Projects -->
         <div id="projects" class="tab-content">
             <h2 class="page-title">إدارة المشاريع</h2>
             <div class="form-container">
@@ -119,141 +163,98 @@
                     <input type="hidden" id="project-id">
                     <div class="form-row">
                         <div class="form-group"><label>اسم المشروع *</label><input type="text" id="project-name" class="form-control" required></div>
-                        <div class="form-group"><label>العميل *</label><div class="search-container"><input type="text" id="project-customer" class="form-control" required placeholder="ابحث عن عميل أو أدخل اسم جديد"><div id="customer-search-results" class="search-results"></div></div></div>
+                        <div class="form-group"><label>العميل *</label><div class="search-container"><input type="text" id="project-customer" class="form-control" required placeholder="ابحث عن عميل"><div id="customer-search-results" class="search-results"></div></div></div>
                     </div>
                     <div class="form-row"><div class="form-group"><label>وصف المشروع</label><textarea id="project-description" class="form-control" rows="3"></textarea></div></div>
                     <div class="form-row">
-                        <div class="form-group"><label>تاريخ البدء</label><input type="date" id="project-start-date" class="form-control" value="2026-01-01"></div>
-                        <div class="form-group"><label>تاريخ الانتهاء المتوقع</label><input type="date" id="project-end-date" class="form-control" value="2026-12-31"></div>
-                        <div class="form-group"><label>الميزانية (د.ك)</label><input type="number" id="project-budget" class="form-control" min="0" step="0.001"></div>
+                        <div class="form-group"><label>تاريخ البدء</label><input type="date" id="project-start-date" class="form-control"></div>
+                        <div class="form-group"><label>تاريخ الانتهاء</label><input type="date" id="project-end-date" class="form-control"></div>
+                        <div class="form-group"><label>الميزانية (د.ك)</label><input type="number" id="project-budget" class="form-control" step="0.001"></div>
                     </div>
                     <button type="submit" class="btn">حفظ المشروع</button>
                     <button type="button" id="project-clear" class="btn btn-secondary">جديد</button>
                 </form>
             </div>
             <h3 style="color:#d32f2f">قائمة المشاريع</h3>
-            <table class="data-table"><thead>运转<th>اسم المشروع</th><th>العميل</th><th>الميزانية</th><th>تاريخ البدء</th><th>حالة المشروع</th><th>الإجراءات</th> </thead><tbody id="projects-list"></tbody>  </table>
+            <table class="data-table"><thead><tr><th>اسم المشروع</th><th>العميل</th><th>الميزانية</th><th>تاريخ البدء</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="projects-list"></tbody></table>
         </div>
         
-        <!-- Revenues -->
         <div id="revenues" class="tab-content">
             <h2 class="page-title">إدارة الإيرادات</h2>
-            <div class="form-container">
-                <h3 style="color:#d32f2f">تسجيل إيراد جديد</h3>
-                <div id="revenue-alert" class="alert"></div>
-                <form id="revenue-form">
-                    <input type="hidden" id="revenue-id">
-                    <div class="form-row">
-                        <div class="form-group"><label>المشروع *</label><div class="search-container"><input type="text" id="revenue-project" class="form-control" required placeholder="ابحث عن مشروع"><div id="project-search-results" class="search-results"></div></div></div>
-                        <div class="form-group"><label>المبلغ (د.ك) *</label><input type="number" id="revenue-amount" class="form-control" min="0" step="0.001" required></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>تاريخ الإيراد</label><input type="date" id="revenue-date" class="form-control" value="2026-01-01"></div>
-                        <div class="form-group"><label>رقم الفاتورة</label><input type="text" id="revenue-invoice" class="form-control"></div>
-                    </div>
-                    <div class="form-row"><div class="form-group"><label>البيان</label><textarea id="revenue-description" class="form-control" rows="3"></textarea></div></div>
-                    <div class="form-row">
-                        <div class="form-group"><label>قيمة المشروع بالكامل</label><input type="number" id="project-total-value" class="form-control" readonly></div>
-                        <div class="form-group"><label>الدفعات المستلمة</label><input type="number" id="project-received-payments" class="form-control" readonly></div>
-                        <div class="form-group"><label>المبلغ المتبقي</label><input type="number" id="project-remaining" class="form-control" readonly></div>
-                    </div>
-                    <button type="submit" class="btn">تسجيل الإيراد</button>
-                    <button type="button" id="revenue-clear" class="btn btn-secondary">جديد</button>
-                </form>
+            <div class="form-container"><h3 style="color:#d32f2f">تسجيل إيراد جديد</h3><div id="revenue-alert" class="alert"></div>
+                <form id="revenue-form"><input type="hidden" id="revenue-id"><div class="form-row"><div class="form-group"><label>المشروع *</label><div class="search-container"><input type="text" id="revenue-project" class="form-control" required><div id="project-search-results" class="search-results"></div></div></div><div class="form-group"><label>المبلغ (د.ك) *</label><input type="number" id="revenue-amount" class="form-control" step="0.001" required></div></div>
+                <div class="form-row"><div class="form-group"><label>التاريخ</label><input type="date" id="revenue-date" class="form-control"></div><div class="form-group"><label>رقم الفاتورة</label><input type="text" id="revenue-invoice" class="form-control"></div></div>
+                <div class="form-row"><div class="form-group"><label>البيان</label><textarea id="revenue-description" class="form-control" rows="2"></textarea></div></div>
+                <div class="form-row"><div class="form-group"><label>قيمة المشروع</label><input type="text" id="project-total-value" class="form-control" readonly></div><div class="form-group"><label>الدفعات المستلمة</label><input type="text" id="project-received-payments" class="form-control" readonly></div><div class="form-group"><label>المتبقي</label><input type="text" id="project-remaining" class="form-control" readonly></div></div>
+                <button type="submit" class="btn">تسجيل الإيراد</button><button type="button" id="revenue-clear" class="btn btn-secondary">جديد</button></form>
             </div>
             <h3 style="color:#d32f2f">سجل الإيرادات</h3>
-            <table class="data-table"><thead>运转<th>المشروع</th><th>المبلغ</th><th>التاريخ</th><th>رقم الفاتورة</th><th>البيان</th><th>الإجراءات</th> </thead><tbody id="revenues-list"></tbody>  </table>
+            <table class="data-table"><thead><tr><th>المشروع</th><th>المبلغ</th><th>التاريخ</th><th>رقم الفاتورة</th><th>البيان</th><th>الإجراءات</th></tr></thead><tbody id="revenues-list"></tbody></table>
         </div>
         
-        <!-- Expenses -->
         <div id="expenses" class="tab-content">
             <h2 class="page-title">إدارة المصروفات</h2>
-            <div class="form-container">
-                <h3 style="color:#d32f2f">تسجيل مصروف جديد</h3>
-                <div id="expense-alert" class="alert"></div>
-                <form id="expense-form">
-                    <input type="hidden" id="expense-id">
-                    <div class="form-row">
-                        <div class="form-group"><label>المشروع *</label><div class="search-container"><input type="text" id="expense-project" class="form-control" required placeholder="ابحث عن مشروع"><div id="expense-project-search-results" class="search-results"></div></div></div>
-                        <div class="form-group"><label>المبلغ (د.ك) *</label><input type="number" id="expense-amount" class="form-control" min="0" step="0.001" required></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>تاريخ المصروف</label><input type="date" id="expense-date" class="form-control" value="2026-01-01"></div>
-                        <div class="form-group"><label>نوع المصروف</label><select id="expense-category" class="form-control"><option value="">اختر نوع المصروف</option><option>مواد بناء</option><option>أجور عمال</option><option>معدات</option><option>نقل</option><option>إدارة</option><option>أخرى</option></select></div>
-                    </div>
-                    <div class="form-row"><div class="form-group"><label>البيان</label><textarea id="expense-description" class="form-control" rows="3"></textarea></div></div>
-                    <button type="submit" class="btn">تسجيل المصروف</button>
-                    <button type="button" id="expense-clear" class="btn btn-secondary">جديد</button>
-                </form>
+            <div class="form-container"><h3 style="color:#d32f2f">تسجيل مصروف جديد</h3><div id="expense-alert" class="alert"></div>
+                <form id="expense-form"><input type="hidden" id="expense-id"><div class="form-row"><div class="form-group"><label>المشروع *</label><div class="search-container"><input type="text" id="expense-project" class="form-control" required><div id="expense-project-search-results" class="search-results"></div></div></div><div class="form-group"><label>المبلغ (د.ك) *</label><input type="number" id="expense-amount" class="form-control" step="0.001" required></div></div>
+                <div class="form-row"><div class="form-group"><label>التاريخ</label><input type="date" id="expense-date" class="form-control"></div><div class="form-group"><label>نوع المصروف</label><select id="expense-category" class="form-control"><option>مواد بناء</option><option>أجور عمال</option><option>معدات</option><option>نقل</option><option>إدارة</option><option>أخرى</option></select></div></div>
+                <div class="form-row"><div class="form-group"><label>البيان</label><textarea id="expense-description" class="form-control" rows="2"></textarea></div></div>
+                <button type="submit" class="btn">تسجيل المصروف</button><button type="button" id="expense-clear" class="btn btn-secondary">جديد</button></form>
             </div>
             <h3 style="color:#d32f2f">سجل المصروفات</h3>
-            <table class="data-table"><thead>运转<th>المشروع</th><th>المبلغ</th><th>التاريخ</th><th>نوع المصروف</th><th>البيان</th><th>الإجراءات</th> </thead><tbody id="expenses-list"></tbody>  </table>
+            <table class="data-table"><thead><tr><th>المشروع</th><th>المبلغ</th><th>التاريخ</th><th>نوع المصروف</th><th>البيان</th><th>الإجراءات</th></tr></thead><tbody id="expenses-list"></tbody></table>
         </div>
         
-        <!-- Customers -->
         <div id="customers" class="tab-content">
             <h2 class="page-title">إدارة العملاء</h2>
-            <div class="form-container">
-                <h3 style="color:#d32f2f">إضافة / تعديل عميل</h3>
-                <div id="customer-alert" class="alert"></div>
-                <form id="customer-form">
-                    <input type="hidden" id="customer-id">
-                    <div class="form-row">
-                        <div class="form-group"><label>اسم العميل *</label><input type="text" id="customer-name" class="form-control" required></div>
-                        <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="customer-phone" class="form-control"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="customer-email" class="form-control"></div>
-                        <div class="form-group"><label>العنوان</label><input type="text" id="customer-address" class="form-control"></div>
-                    </div>
-                    <div class="form-row"><div class="form-group"><label>ملاحظات</label><textarea id="customer-notes" class="form-control" rows="3"></textarea></div></div>
-                    <button type="submit" class="btn">حفظ العميل</button>
-                    <button type="button" id="customer-clear" class="btn btn-secondary">جديد</button>
-                </form>
+            <div class="form-container"><h3 style="color:#d32f2f">إضافة / تعديل عميل</h3><div id="customer-alert" class="alert"></div>
+                <form id="customer-form"><input type="hidden" id="customer-id"><div class="form-row"><div class="form-group"><label>اسم العميل *</label><input type="text" id="customer-name" class="form-control" required></div><div class="form-group"><label>رقم الهاتف</label><input type="tel" id="customer-phone" class="form-control"></div></div>
+                <div class="form-row"><div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="customer-email" class="form-control"></div><div class="form-group"><label>العنوان</label><input type="text" id="customer-address" class="form-control"></div></div>
+                <div class="form-row"><div class="form-group"><label>ملاحظات</label><textarea id="customer-notes" class="form-control" rows="2"></textarea></div></div>
+                <button type="submit" class="btn">حفظ العميل</button><button type="button" id="customer-clear" class="btn btn-secondary">جديد</button></form>
             </div>
             <h3 style="color:#d32f2f">قائمة العملاء</h3>
-            <table class="data-table"><thead>运转<th>اسم العميل</th><th>رقم الهاتف</th><th>البريد الإلكتروني</th><th>العنوان</th><th>الإجراءات</th> </thead><tbody id="customers-list"></tbody>  </table>
+            <table class="data-table"><thead><tr><th>اسم العميل</th><th>رقم الهاتف</th><th>البريد الإلكتروني</th><th>العنوان</th><th>الإجراءات</th></tr></thead><tbody id="customers-list"></tbody></table>
         </div>
         
-        <!-- Statements -->
         <div id="statements" class="tab-content">
             <h2 class="page-title">كشوف حساب العملاء</h2>
             <div class="form-container">
                 <h3 style="color:#d32f2f">معايير كشف الحساب</h3>
                 <div class="filters-container">
-                    <div class="form-group"><label>العميل</label><div class="search-container"><input type="text" id="statement-customer" class="form-control" placeholder="ابحث عن عميل"><div id="statement-customer-search-results" class="search-results"></div></div></div>
-                    <div class="form-group"><label>المشروع</label><div class="search-container"><input type="text" id="statement-project" class="form-control" placeholder="ابحث عن مشروع"><div id="statement-project-search-results" class="search-results"></div></div></div>
-                    <div class="form-group"><label>من تاريخ</label><input type="date" id="statement-start-date" class="form-control" value="2026-01-01"></div>
-                    <div class="form-group"><label>إلى تاريخ</label><input type="date" id="statement-end-date" class="form-control" value="2026-12-31"></div>
-                    <div class="form-group"><button type="button" id="generate-statement" class="btn">عرض كشف الحساب</button><button type="button" id="save-pdf-btn" class="btn" style="margin-right:10px;">تصدير PDF (متعدد الصفحات)</button></div>
+                    <div class="form-group large-field"><label>العميل</label><div class="search-container"><input type="text" id="statement-customer" class="form-control" placeholder="ابحث عن عميل"><div id="statement-customer-search-results" class="search-results"></div></div></div>
+                    <div class="form-group large-field"><label>المشروع</label><div class="search-container"><input type="text" id="statement-project" class="form-control" placeholder="ابحث عن مشروع"><div id="statement-project-search-results" class="search-results"></div></div></div>
+                    <div class="form-group small-field"><label>من تاريخ</label><input type="date" id="statement-start-date" class="form-control"></div>
+                    <div class="form-group small-field"><label>إلى تاريخ</label><input type="date" id="statement-end-date" class="form-control"></div>
+                    <div class="form-group" style="flex:0 0 auto"><button type="button" id="generate-statement" class="btn">عرض كشف الحساب</button><button type="button" id="save-pdf-btn" class="btn" style="margin-right:10px;">تصدير PDF</button></div>
                 </div>
             </div>
             <div id="statement-results">
                 <h3 style="color:#d32f2f">نتائج كشف الحساب</h3>
                 <div id="statement-summary" style="margin-bottom:20px; padding:15px; background:#f8fbff; border-radius:8px;"></div>
-                <div id="project-total-info" style="margin-bottom:20px; padding:15px; background:#f0f8ff; border-radius:8px; display:none;"><h4 style="color:#d32f2f">إجماليات المشروع</h4><div style="display:flex; gap:20px;"><div>قيمة المشروع: <span id="project-total-value-display"></span></div><div>الدفعات المستلمة: <span id="project-received-display"></span></div><div>المتبقي: <span id="project-remaining-display"></span></div></div></div>
-                <table class="data-table" id="statement-table"><thead>运转<th>التاريخ</th><th>رقم الفاتورة</th><th>رقم السند</th><th>المشروع</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد</th> </thead><tbody id="statement-details"></tbody><tfoot id="statement-totals"></tfoot>  </table>
+                <div id="project-total-info" style="margin-bottom:20px; padding:15px; background:#f0f8ff; border-radius:8px; display:none;"><h4>إجماليات المشروع</h4><div style="display:flex; gap:20px;"><div>قيمة المشروع: <span id="project-total-value-display"></span></div><div>الدفعات المستلمة: <span id="project-received-display"></span></div><div>المتبقي: <span id="project-remaining-display"></span></div></div></div>
+                <table class="data-table"><thead><tr><th>التاريخ</th><th>رقم الفاتورة</th><th>رقم السند</th><th>المشروع</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد</th></tr></thead><tbody id="statement-details"></tbody><tfoot id="statement-totals"></tfoot></table>
             </div>
         </div>
         
-        <!-- Reports -->
         <div id="reports" class="tab-content">
             <h2 class="page-title">تقارير أرباح المشاريع</h2>
             <div class="form-container">
                 <h3 style="color:#d32f2f">بحث عن مشروع</h3>
                 <div class="filters-container">
-                    <div class="form-group"><label>المشروع *</label><div class="search-container"><input type="text" id="report-project" class="form-control" required placeholder="ابحث عن مشروع"><div id="report-project-search-results" class="search-results"></div></div></div>
-                    <div class="form-group"><button type="button" id="generate-report" class="btn">عرض التقرير</button><button type="button" id="export-report-pdf" class="btn btn-success">تصدير PDF (متعدد الصفحات)</button></div>
+                    <div class="form-group" style="flex:2"><label>المشروع *</label><div class="search-container"><input type="text" id="report-project" class="form-control" required placeholder="ابحث عن مشروع"><div id="report-project-search-results" class="search-results"></div></div></div>
+                    <div class="form-group"><button type="button" id="generate-report" class="btn">عرض التقرير</button><button type="button" id="export-report-pdf" class="btn btn-success">تصدير PDF</button></div>
                 </div>
             </div>
             <div id="report-results" class="report-results" style="display:none;">
-                <div class="report-card"><h4 id="report-project-name"></h4><div class="report-row"><span>إجمالي قيمة المشروع:</span><span id="report-project-total"></span></div><div class="report-row"><span>إجمالي الإيرادات:</span><span id="report-total-revenues"></span></div><div class="report-row"><span>إجمالي المصروفات:</span><span id="report-total-expenses"></span></div><div class="report-row"><span>صافي الربح/الخسارة:</span><span id="report-net-profit"></span></div><div class="report-row"><span>نسبة الربح:</span><span id="report-profit-percentage"></span></div><div class="report-row"><span>المبلغ المتبقي:</span><span id="report-remaining-amount"></span></div><div class="report-row"><span>حالة المشروع:</span><span id="report-project-status"></span></div></div>
-                <div><h4>تفاصيل الإيرادات</h4><table class="data-table"><thead>运转<th>التاريخ</th><th>المبلغ</th><th>رقم الفاتورة</th><th>البيان</th> </thead><tbody id="report-revenues-details"></tbody>  </table></div>
-                <div><h4>تفاصيل المصروفات</h4><table class="data-table"><thead>运转<th>التاريخ</th><th>المبلغ</th><th>نوع المصروف</th><th>البيان</th> </thead><tbody id="report-expenses-details"></tbody>  </table></div>
+                <div class="report-card">
+                    <div class="summary-grid" id="report-summary-grid"></div>
+                </div>
+                <div><h4>تفاصيل الإيرادات</h4><table class="data-table"><thead><tr><th>التاريخ</th><th>المبلغ</th><th>رقم الفاتورة</th><th>البيان</th></tr></thead><tbody id="report-revenues-details"></tbody><tfoot id="revenues-total-foot" style="background:#f0f0f0; font-weight:bold;"></tfoot></table></div>
+                <div><h4>تفاصيل المصروفات</h4><table class="data-table"><thead><tr><th>التاريخ</th><th>المبلغ</th><th>نوع المصروف</th><th>البيان</th></tr></thead><tbody id="report-expenses-details"></tbody><tfoot id="expenses-total-foot" style="background:#f0f0f0; font-weight:bold;"></tfoot></table></div>
+                <div id="net-profit-summary" style="margin-top:20px; padding:15px; background:#eef; border-radius:8px; text-align:center; font-size:1.2rem;"></div>
             </div>
         </div>
         
-        <!-- Backup -->
         <div id="backup" class="tab-content">
             <h2 class="page-title">النسخ الاحتياطي والاستعادة</h2>
             <div class="form-container">
@@ -265,41 +266,25 @@
             </div>
         </div>
         
-        <!-- PDF Templates -->
-        <div id="pdf-template" class="pdf-template">
-            <div style="text-align:center; margin-bottom:10px;"><img src="https://i.postimg.cc/JnHWjhkL/logo2.png" style="width:50px; border-radius:50%;"><h2 style="color:#d32f2f;">شركة المحاسنة لتشييد المباني</h2><h3>كشف حساب عميل</h3></div>
-            <div><span>العميل: <span id="pdf-customer-name"></span> &nbsp;&nbsp; المشروع: <span id="pdf-project-name"></span></span></div>
-            <div>الفترة: من <span id="pdf-start-date"></span> إلى <span id="pdf-end-date"></span> &nbsp; تاريخ الطباعة: <span id="pdf-print-date"></span></div>
-            <div id="pdf-summary"></div>
-            <div id="pdf-project-total-info" style="display:none;"><h4>إجماليات المشروع</h4><div>قيمة المشروع: <span id="pdf-project-total-value"></span> | الدفعات المستلمة: <span id="pdf-project-received"></span> | المتبقي: <span id="pdf-project-remaining"></span></div></div>
-            <table style="width:100%; border-collapse:collapse;" id="pdf-statement-table"><thead><tr style="background:#d32f2f; color:white;"><th>التاريخ</th><th>رقم الفاتورة</th><th>رقم السند</th><th>المشروع</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد</th>  </tr></thead><tbody id="pdf-table-body"></tbody><tfoot id="pdf-table-totals"></tfoot></table>
-        </div>
-        <div id="pdf-report-template" class="pdf-report-template">
-            <div style="text-align:center;"><img src="https://i.postimg.cc/JnHWjhkL/logo2.png" style="width:50px;"><h2 style="color:#d32f2f;">شركة المحاسنة لتشييد المباني</h2><h3>تقرير أرباح المشروع</h3></div>
-            <div>المشروع: <span id="pdf-report-project-name"></span> &nbsp; تاريخ التقرير: <span id="pdf-report-date"></span></div>
-            <div id="pdf-report-summary"></div>
-            <h4>تفاصيل الإيرادات</h4>
-            <table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#d32f2f; color:white;"><th>التاريخ</th><th>المبلغ</th><th>رقم الفاتورة</th><th>البيان</th>  </tr></thead><tbody id="pdf-report-revenues-body"></tbody></table>
-            <h4>تفاصيل المصروفات</h4>
-            <table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#d32f2f; color:white;"><th>التاريخ</th><th>المبلغ</th><th>نوع المصروف</th><th>البيان</th>  </tr></thead><tbody id="pdf-report-expenses-body"></tbody></table>
-        </div>
     </div>
     
-    <div class="signature-card"><div class="name">Yasser Elkhateeb</div><div class="title">مطور البرنامج 67011143</div></div>
+    <a href="https://yasser-q8.github.io/myprofile/#" class="signature-card" target="_blank" rel="noopener noreferrer">
+        <div class="name">Yasser Elkhateeb</div>
+        <div class="title">مطور البرنامج 67011143</div>
+    </a>
 
     <script>
         let data = { projects: [], revenues: [], expenses: [], customers: [] };
-
+        
         function loadData() { const saved = localStorage.getItem('constructionCompanyData'); if(saved) try { data = JSON.parse(saved); } catch(e){} }
         function saveData() { localStorage.setItem('constructionCompanyData', JSON.stringify(data)); updateDashboardStats(); updateBackupStats(); }
         function updateDashboardStats() {
-            const totalProjects = data.projects.length;
-            const totalRevenues = data.revenues.reduce((s,r)=>s+r.amount,0);
-            const totalExpenses = data.expenses.reduce((s,e)=>s+e.amount,0);
-            document.getElementById('total-projects').textContent = totalProjects;
-            document.getElementById('total-revenues').textContent = formatCurrency(totalRevenues);
-            document.getElementById('total-expenses').textContent = formatCurrency(totalExpenses);
-            document.getElementById('net-profit').textContent = formatCurrency(totalRevenues - totalExpenses);
+            document.getElementById('total-projects').textContent = data.projects.length;
+            const rev = data.revenues.reduce((s,r)=>s+r.amount,0);
+            const exp = data.expenses.reduce((s,e)=>s+e.amount,0);
+            document.getElementById('total-revenues').textContent = formatCurrency(rev);
+            document.getElementById('total-expenses').textContent = formatCurrency(exp);
+            document.getElementById('net-profit').textContent = formatCurrency(rev-exp);
         }
         function updateBackupStats() {
             document.getElementById('backup-projects-count').textContent = data.projects.length;
@@ -307,244 +292,407 @@
             document.getElementById('backup-revenues-count').textContent = data.revenues.length;
             document.getElementById('backup-expenses-count').textContent = data.expenses.length;
         }
-        function formatCurrency(amount) { return amount.toLocaleString('en-US', {minimumFractionDigits:3}) + ' د.ك'; }
-        function formatDate(dateString) { if(!dateString) return ''; const d = new Date(dateString); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
-        function showAlert(msg, type, containerId) { const div=document.getElementById(containerId); div.textContent=msg; div.className=`alert alert-${type}`; div.style.display='block'; setTimeout(()=>div.style.display='none',5000); }
+        function formatCurrency(amount) { return amount.toLocaleString('en-US',{minimumFractionDigits:3})+' د.ك'; }
+        function formatDate(ds) { if(!ds) return ''; const d=new Date(ds); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+        function showAlert(msg,type,containerId){ const d=document.getElementById(containerId); d.textContent=msg; d.className=`alert alert-${type}`; d.style.display='block'; setTimeout(()=>d.style.display='none',5000); }
         
-        // CRUD: Projects
-        function renderProjects() {
-            const tbody=document.getElementById('projects-list'); tbody.innerHTML='';
-            data.projects.forEach(p=>{ const row=tbody.insertRow(); row.innerHTML=`<td>${p.name}</td><td>${p.customer}</td><td>${formatCurrency(p.budget)}</td><td>${formatDate(p.startDate)}</td><td>${p.status||'جاري'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editProject(${p.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteProject(${p.id})">حذف</button></td>`; });
+        function setDefaultDates() {
+            const today = new Date(); const yyyy = today.getFullYear(); const mm = String(today.getMonth() + 1).padStart(2,'0'); const dd = String(today.getDate()).padStart(2,'0'); const todayStr = `${yyyy}-${mm}-${dd}`; const firstDay = `${yyyy}-${mm}-01`;
+            ['project-start-date', 'project-end-date', 'revenue-date', 'expense-date'].forEach(id => { const el = document.getElementById(id); if(el && !el.value) el.value = todayStr; });
+            const startEl = document.getElementById('statement-start-date'); const endEl = document.getElementById('statement-end-date');
+            if(startEl && !startEl.value) startEl.value = firstDay; if(endEl && !endEl.value) endEl.value = todayStr;
         }
+        
+        function renderProjects() { const t=document.getElementById('projects-list'); t.innerHTML=''; data.projects.forEach(p=>{ const r=t.insertRow(); r.innerHTML=`<td>${p.name}</td><td>${p.customer}</td><td>${formatCurrency(p.budget)}</td><td>${formatDate(p.startDate)}</td><td>${p.status||'جاري'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editProject(${p.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteProject(${p.id})">حذف</button></td>`; }); }
         window.editProject=function(id){ const p=data.projects.find(p=>p.id===id); if(p){ document.getElementById('project-id').value=p.id; document.getElementById('project-name').value=p.name; document.getElementById('project-customer').value=p.customer; document.getElementById('project-description').value=p.description||''; document.getElementById('project-start-date').value=p.startDate||''; document.getElementById('project-end-date').value=p.endDate||''; document.getElementById('project-budget').value=p.budget||''; } };
         window.deleteProject=function(id){ if(confirm('حذف المشروع؟')){ data.projects=data.projects.filter(p=>p.id!==id); data.revenues=data.revenues.filter(r=>r.projectId!==id); data.expenses=data.expenses.filter(e=>e.projectId!==id); saveData(); renderProjects(); renderRevenues(); renderExpenses(); updateDashboardStats(); updateBackupStats(); showAlert('تم الحذف','success','project-alert'); } };
-        function saveProject(e){ e.preventDefault(); const id=document.getElementById('project-id').value; const name=document.getElementById('project-name').value; const customerName=document.getElementById('project-customer').value; const description=document.getElementById('project-description').value; const startDate=document.getElementById('project-start-date').value; const endDate=document.getElementById('project-end-date').value; const budget=parseFloat(document.getElementById('project-budget').value)||0;
-            let customer=data.customers.find(c=>c.name===customerName);
-            if(!customer){ const newId=data.customers.length?Math.max(...data.customers.map(c=>c.id))+1:1; customer={id:newId,name:customerName,phone:'',email:'',address:'',notes:''}; data.customers.push(customer); renderCustomers(); }
-            if(id){ const idx=data.projects.findIndex(p=>p.id==id); data.projects[idx]={...data.projects[idx],name,customer:customerName,description,startDate,endDate,budget}; }
-            else{ const newId=data.projects.length?Math.max(...data.projects.map(p=>p.id))+1:1; data.projects.push({id:newId,name,customer:customerName,description,startDate,endDate,budget,status:'جاري'}); }
-            saveData(); renderProjects(); updateDashboardStats(); updateBackupStats(); document.getElementById('project-form').reset(); showAlert('تم حفظ المشروع','success','project-alert');
-        }
+        function saveProject(e){ e.preventDefault(); const id=document.getElementById('project-id').value; const name=document.getElementById('project-name').value; const cust=document.getElementById('project-customer').value; const desc=document.getElementById('project-description').value; const sd=document.getElementById('project-start-date').value; const ed=document.getElementById('project-end-date').value; const bud=parseFloat(document.getElementById('project-budget').value)||0;
+            if(!data.customers.find(c=>c.name===cust)){ const nid=data.customers.length?Math.max(...data.customers.map(c=>c.id))+1:1; data.customers.push({id:nid,name:cust,phone:'',email:'',address:'',notes:''}); renderCustomers(); }
+            if(id){ const idx=data.projects.findIndex(p=>p.id==id); data.projects[idx]={...data.projects[idx],name,customer:cust,description:desc,startDate:sd,endDate:ed,budget:bud}; }
+            else{ const nid=data.projects.length?Math.max(...data.projects.map(p=>p.id))+1:1; data.projects.push({id:nid,name,customer:cust,description:desc,startDate:sd,endDate:ed,budget:bud,status:'جاري'}); }
+            saveData(); renderProjects(); updateDashboardStats(); updateBackupStats(); document.getElementById('project-form').reset(); showAlert('تم الحفظ','success','project-alert'); setDefaultDates(); }
         
-        // CRUD: Revenues
-        function renderRevenues(){
-            const tbody=document.getElementById('revenues-list'); tbody.innerHTML='';
-            data.revenues.forEach(r=>{ const p=data.projects.find(pr=>pr.id===r.projectId); const pName=p?p.name:'غير معروف'; const row=tbody.insertRow(); row.innerHTML=`<td>${pName}</td><td>${formatCurrency(r.amount)}</td><td>${formatDate(r.date)}</td><td>${r.invoice||'-'}</td><td>${r.description||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editRevenue(${r.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteRevenue(${r.id})">حذف</button></td>`; });
-        }
+        function renderRevenues(){ const t=document.getElementById('revenues-list'); t.innerHTML=''; data.revenues.forEach(r=>{ const p=data.projects.find(p=>p.id===r.projectId); const pn=p?p.name:'غير معروف'; const row=t.insertRow(); row.innerHTML=`<td>${pn}</td><td>${formatCurrency(r.amount)}</td><td>${formatDate(r.date)}</td><td>${r.invoice||'-'}</td><td>${r.description||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editRevenue(${r.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteRevenue(${r.id})">حذف</button></td>`; }); }
         window.editRevenue=function(id){ const r=data.revenues.find(r=>r.id===id); if(r){ const p=data.projects.find(p=>p.id===r.projectId); document.getElementById('revenue-id').value=r.id; document.getElementById('revenue-project').value=p?p.name:''; document.getElementById('revenue-amount').value=r.amount; document.getElementById('revenue-date').value=r.date||''; document.getElementById('revenue-invoice').value=r.invoice||''; document.getElementById('revenue-description').value=r.description||''; updateProjectFinancials(p?p.name:''); } };
         window.deleteRevenue=function(id){ if(confirm('حذف الإيراد؟')){ data.revenues=data.revenues.filter(r=>r.id!==id); saveData(); renderRevenues(); updateDashboardStats(); updateBackupStats(); showAlert('تم الحذف','success','revenue-alert'); } };
-        function saveRevenue(e){ e.preventDefault(); const id=document.getElementById('revenue-id').value; const projectName=document.getElementById('revenue-project').value; const amount=parseFloat(document.getElementById('revenue-amount').value); const date=document.getElementById('revenue-date').value||new Date().toISOString().split('T')[0]; const invoice=document.getElementById('revenue-invoice').value; const description=document.getElementById('revenue-description').value; const proj=data.projects.find(p=>p.name===projectName); if(!proj){ showAlert('اختر مشروع صحيح','error','revenue-alert'); return; }
-            if(id){ const idx=data.revenues.findIndex(r=>r.id==id); data.revenues[idx]={...data.revenues[idx],projectId:proj.id,amount,date,invoice,description}; }
-            else{ const newId=data.revenues.length?Math.max(...data.revenues.map(r=>r.id))+1:1; data.revenues.push({id:newId,projectId:proj.id,amount,date,invoice,description}); }
-            saveData(); renderRevenues(); updateDashboardStats(); updateBackupStats(); document.getElementById('revenue-form').reset(); showAlert('تم تسجيل الإيراد','success','revenue-alert');
-        }
+        function saveRevenue(e){ e.preventDefault(); const id=document.getElementById('revenue-id').value; const pn=document.getElementById('revenue-project').value; const amt=parseFloat(document.getElementById('revenue-amount').value); const dt=document.getElementById('revenue-date').value||new Date().toISOString().split('T')[0]; const inv=document.getElementById('revenue-invoice').value; const desc=document.getElementById('revenue-description').value; const proj=data.projects.find(p=>p.name===pn); if(!proj){ showAlert('اختر مشروع صحيح','error','revenue-alert'); return; }
+            if(id){ const idx=data.revenues.findIndex(r=>r.id==id); data.revenues[idx]={...data.revenues[idx],projectId:proj.id,amount:amt,date:dt,invoice:inv,description:desc}; }
+            else{ const nid=data.revenues.length?Math.max(...data.revenues.map(r=>r.id))+1:1; data.revenues.push({id:nid,projectId:proj.id,amount:amt,date:dt,invoice:inv,description:desc}); }
+            saveData(); renderRevenues(); updateDashboardStats(); updateBackupStats(); document.getElementById('revenue-form').reset(); showAlert('تم التسجيل','success','revenue-alert'); setDefaultDates(); }
         
-        // CRUD: Expenses
-        function renderExpenses(){
-            const tbody=document.getElementById('expenses-list'); tbody.innerHTML='';
-            data.expenses.forEach(e=>{ const p=data.projects.find(pr=>pr.id===e.projectId); const pName=p?p.name:'غير معروف'; const row=tbody.insertRow(); row.innerHTML=`<td>${pName}</td><td>${formatCurrency(e.amount)}</td><td>${formatDate(e.date)}</td><td>${e.category||'-'}</td><td>${e.description||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editExpense(${e.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteExpense(${e.id})">حذف</button></td>`; });
-        }
+        function renderExpenses(){ const t=document.getElementById('expenses-list'); t.innerHTML=''; data.expenses.forEach(e=>{ const p=data.projects.find(p=>p.id===e.projectId); const pn=p?p.name:'غير معروف'; const row=t.insertRow(); row.innerHTML=`<td>${pn}</td><td>${formatCurrency(e.amount)}</td><td>${formatDate(e.date)}</td><td>${e.category||'-'}</td><td>${e.description||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editExpense(${e.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteExpense(${e.id})">حذف</button></td>`; }); }
         window.editExpense=function(id){ const e=data.expenses.find(e=>e.id===id); if(e){ const p=data.projects.find(p=>p.id===e.projectId); document.getElementById('expense-id').value=e.id; document.getElementById('expense-project').value=p?p.name:''; document.getElementById('expense-amount').value=e.amount; document.getElementById('expense-date').value=e.date||''; document.getElementById('expense-category').value=e.category||''; document.getElementById('expense-description').value=e.description||''; } };
         window.deleteExpense=function(id){ if(confirm('حذف المصروف؟')){ data.expenses=data.expenses.filter(e=>e.id!==id); saveData(); renderExpenses(); updateDashboardStats(); updateBackupStats(); showAlert('تم الحذف','success','expense-alert'); } };
-        function saveExpense(e){ e.preventDefault(); const id=document.getElementById('expense-id').value; const projectName=document.getElementById('expense-project').value; const amount=parseFloat(document.getElementById('expense-amount').value); const date=document.getElementById('expense-date').value||new Date().toISOString().split('T')[0]; const category=document.getElementById('expense-category').value; const description=document.getElementById('expense-description').value; const proj=data.projects.find(p=>p.name===projectName); if(!proj){ showAlert('اختر مشروع صحيح','error','expense-alert'); return; }
-            if(id){ const idx=data.expenses.findIndex(e=>e.id==id); data.expenses[idx]={...data.expenses[idx],projectId:proj.id,amount,date,category,description}; }
-            else{ const newId=data.expenses.length?Math.max(...data.expenses.map(e=>e.id))+1:1; data.expenses.push({id:newId,projectId:proj.id,amount,date,category,description}); }
-            saveData(); renderExpenses(); updateDashboardStats(); updateBackupStats(); document.getElementById('expense-form').reset(); showAlert('تم تسجيل المصروف','success','expense-alert');
-        }
+        function saveExpense(e){ e.preventDefault(); const id=document.getElementById('expense-id').value; const pn=document.getElementById('expense-project').value; const amt=parseFloat(document.getElementById('expense-amount').value); const dt=document.getElementById('expense-date').value||new Date().toISOString().split('T')[0]; const cat=document.getElementById('expense-category').value; const desc=document.getElementById('expense-description').value; const proj=data.projects.find(p=>p.name===pn); if(!proj){ showAlert('اختر مشروع صحيح','error','expense-alert'); return; }
+            if(id){ const idx=data.expenses.findIndex(e=>e.id==id); data.expenses[idx]={...data.expenses[idx],projectId:proj.id,amount:amt,date:dt,category:cat,description:desc}; }
+            else{ const nid=data.expenses.length?Math.max(...data.expenses.map(e=>e.id))+1:1; data.expenses.push({id:nid,projectId:proj.id,amount:amt,date:dt,category:cat,description:desc}); }
+            saveData(); renderExpenses(); updateDashboardStats(); updateBackupStats(); document.getElementById('expense-form').reset(); showAlert('تم التسجيل','success','expense-alert'); setDefaultDates(); }
         
-        // CRUD: Customers
-        function renderCustomers(){
-            const tbody=document.getElementById('customers-list'); tbody.innerHTML='';
-            data.customers.forEach(c=>{ const row=tbody.insertRow(); row.innerHTML=`<td>${c.name}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.address||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editCustomer(${c.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteCustomer(${c.id})">حذف</button></td>`; });
-        }
+        function renderCustomers(){ const t=document.getElementById('customers-list'); t.innerHTML=''; data.customers.forEach(c=>{ const row=t.insertRow(); row.innerHTML=`<td>${c.name}</td><td>${c.phone||'-'}</td><td>${c.email||'-'}</td><td>${c.address||'-'}</td><td class="actions"><button class="action-btn edit-btn" onclick="editCustomer(${c.id})">تعديل</button><button class="action-btn delete-btn" onclick="deleteCustomer(${c.id})">حذف</button></td>`; }); }
         window.editCustomer=function(id){ const c=data.customers.find(c=>c.id===id); if(c){ document.getElementById('customer-id').value=c.id; document.getElementById('customer-name').value=c.name; document.getElementById('customer-phone').value=c.phone||''; document.getElementById('customer-email').value=c.email||''; document.getElementById('customer-address').value=c.address||''; document.getElementById('customer-notes').value=c.notes||''; } };
         window.deleteCustomer=function(id){ if(confirm('حذف العميل؟')){ data.customers=data.customers.filter(c=>c.id!==id); saveData(); renderCustomers(); updateBackupStats(); showAlert('تم الحذف','success','customer-alert'); } };
         function saveCustomer(e){ e.preventDefault(); const id=document.getElementById('customer-id').value; const name=document.getElementById('customer-name').value; const phone=document.getElementById('customer-phone').value; const email=document.getElementById('customer-email').value; const address=document.getElementById('customer-address').value; const notes=document.getElementById('customer-notes').value;
             if(id){ const idx=data.customers.findIndex(c=>c.id==id); data.customers[idx]={id:parseInt(id),name,phone,email,address,notes}; }
-            else{ const newId=data.customers.length?Math.max(...data.customers.map(c=>c.id))+1:1; data.customers.push({id:newId,name,phone,email,address,notes}); }
-            saveData(); renderCustomers(); updateBackupStats(); document.getElementById('customer-form').reset(); showAlert('تم حفظ العميل','success','customer-alert');
-        }
+            else{ const nid=data.customers.length?Math.max(...data.customers.map(c=>c.id))+1:1; data.customers.push({id:nid,name,phone,email,address,notes}); }
+            saveData(); renderCustomers(); updateBackupStats(); document.getElementById('customer-form').reset(); showAlert('تم الحفظ','success','customer-alert'); }
         
-        // Helpers
-        function updateProjectFinancials(projectName){
-            if(!projectName){ document.getElementById('project-total-value').value=''; document.getElementById('project-received-payments').value=''; document.getElementById('project-remaining').value=''; return; }
-            const proj=data.projects.find(p=>p.name===projectName); if(!proj) return;
-            const received=data.revenues.filter(r=>r.projectId===proj.id).reduce((s,r)=>s+r.amount,0);
-            document.getElementById('project-total-value').value=proj.budget||0;
-            document.getElementById('project-received-payments').value=received;
-            document.getElementById('project-remaining').value=(proj.budget||0)-received;
-        }
+        function updateProjectFinancials(pn){ if(!pn){ document.getElementById('project-total-value').value=''; document.getElementById('project-received-payments').value=''; document.getElementById('project-remaining').value=''; return; } const p=data.projects.find(p=>p.name===pn); if(!p) return; const rec=data.revenues.filter(r=>r.projectId===p.id).reduce((s,r)=>s+r.amount,0); document.getElementById('project-total-value').value=p.budget||0; document.getElementById('project-received-payments').value=rec; document.getElementById('project-remaining').value=(p.budget||0)-rec; }
         
         // Search functions
-        function searchCustomers(){ const term=document.getElementById('project-customer').value.toLowerCase(); const container=document.getElementById('customer-search-results'); if(!term){ container.style.display='none'; return; } const filtered=data.customers.filter(c=>c.name.toLowerCase().includes(term)); displaySearchResults(filtered,container,(c)=>{ document.getElementById('project-customer').value=c.name; container.style.display='none'; }); }
-        function searchProjects(term,containerId){ if(!term){ document.getElementById(containerId).style.display='none'; return; } const container=document.getElementById(containerId); const filtered=data.projects.filter(p=>p.name.toLowerCase().includes(term.toLowerCase())); displaySearchResults(filtered,container,(proj)=>{ if(containerId==='project-search-results'){ document.getElementById('revenue-project').value=proj.name; updateProjectFinancials(proj.name); } else if(containerId==='expense-project-search-results') document.getElementById('expense-project').value=proj.name; else if(containerId==='report-project-search-results') document.getElementById('report-project').value=proj.name; else if(containerId==='statement-project-search-results') document.getElementById('statement-project').value=proj.name; container.style.display='none'; }); }
-        function searchCustomersForStatement(){ const term=document.getElementById('statement-customer').value.toLowerCase(); const container=document.getElementById('statement-customer-search-results'); if(!term){ container.style.display='none'; return; } const filtered=data.customers.filter(c=>c.name.toLowerCase().includes(term)); displaySearchResults(filtered,container,(c)=>{ document.getElementById('statement-customer').value=c.name; container.style.display='none'; }); }
-        function displaySearchResults(items,container,callback){ container.innerHTML=''; if(items.length===0){ container.innerHTML='<div class="search-result-item">لا توجد نتائج</div>'; container.style.display='block'; return; } items.forEach(item=>{ const div=document.createElement('div'); div.className='search-result-item'; div.textContent=item.name; div.addEventListener('click',()=>callback(item)); container.appendChild(div); }); container.style.display='block'; }
+        function searchCustomers(){ const term=document.getElementById('project-customer').value.toLowerCase(); const cont=document.getElementById('customer-search-results'); if(!term){ cont.style.display='none'; return; } const filt=data.customers.filter(c=>c.name.toLowerCase().includes(term)); displayResults(filt,cont,c=>{ document.getElementById('project-customer').value=c.name; cont.style.display='none'; }); }
+        function searchProjects(term,contId){ if(!term){ document.getElementById(contId).style.display='none'; return; } const cont=document.getElementById(contId); const filt=data.projects.filter(p=>p.name.toLowerCase().includes(term.toLowerCase())); displayResults(filt,cont,proj=>{ if(contId==='project-search-results'){ document.getElementById('revenue-project').value=proj.name; updateProjectFinancials(proj.name); } else if(contId==='expense-project-search-results') document.getElementById('expense-project').value=proj.name; else if(contId==='report-project-search-results') document.getElementById('report-project').value=proj.name; else if(contId==='statement-project-search-results') document.getElementById('statement-project').value=proj.name; cont.style.display='none'; }); }
+        function searchCustomersForStatement(){ const term=document.getElementById('statement-customer').value.toLowerCase(); const cont=document.getElementById('statement-customer-search-results'); if(!term){ cont.style.display='none'; return; } const filt=data.customers.filter(c=>c.name.toLowerCase().includes(term)); displayResults(filt,cont,c=>{ document.getElementById('statement-customer').value=c.name; cont.style.display='none'; }); }
+        function displayResults(items,cont,cb){ cont.innerHTML=''; if(items.length===0){ cont.innerHTML='<div class="search-result-item">لا توجد نتائج</div>'; cont.style.display='block'; return; } items.forEach(i=>{ const d=document.createElement('div'); d.className='search-result-item'; d.textContent=i.name; d.onclick=()=>cb(i); cont.appendChild(d); }); cont.style.display='block'; }
         
         // Statement
         function generateStatement(){
-            const customerName=document.getElementById('statement-customer').value;
-            const projectName=document.getElementById('statement-project').value;
-            const startDate=document.getElementById('statement-start-date').value;
-            const endDate=document.getElementById('statement-end-date').value;
-            if(!customerName && !projectName){ alert('اختر عميل أو مشروع'); return; }
+            const cust=document.getElementById('statement-customer').value, projN=document.getElementById('statement-project').value, sd=document.getElementById('statement-start-date').value, ed=document.getElementById('statement-end-date').value;
+            if(!cust && !projN){ alert('اختر عميل أو مشروع'); return; }
             let projects=[];
-            if(customerName) projects=data.projects.filter(p=>p.customer===customerName);
-            if(projectName){ const p=data.projects.find(p=>p.name===projectName); if(p) projects=[p]; }
+            if(cust) projects=data.projects.filter(p=>p.customer===cust);
+            if(projN){ const p=data.projects.find(p=>p.name===projN); if(p) projects=[p]; }
             if(projects.length===0){ alert('لا توجد مشاريع'); return; }
-            let transactions=[];
-            projects.forEach(proj=>{ data.revenues.filter(r=>r.projectId===proj.id).forEach(r=>transactions.push({...r,projectName:proj.name,type:'revenue'})); data.expenses.filter(e=>e.projectId===proj.id).forEach(e=>transactions.push({...e,projectName:proj.name,type:'expense'})); });
-            if(startDate) transactions=transactions.filter(t=>t.date>=startDate);
-            if(endDate) transactions=transactions.filter(t=>t.date<=endDate);
-            transactions.sort((a,b)=>new Date(a.date)-new Date(b.date));
-            const totalRevenues=transactions.filter(t=>t.type==='revenue').reduce((s,r)=>s+r.amount,0);
-            const totalExpenses=transactions.filter(t=>t.type==='expense').reduce((s,e)=>s+e.amount,0);
-            const netAmount=totalRevenues-totalExpenses;
-            document.getElementById('statement-summary').innerHTML=`<h4>ملخص كشف الحساب: ${customerName||projectName}</h4><p>عدد المشاريع: ${projects.length}</p><p>إجمالي الإيرادات: <strong>${formatCurrency(totalRevenues)}</strong></p><p>إجمالي المصروفات: <strong>${formatCurrency(totalExpenses)}</strong></p><p>صافي المبلغ: <strong>${formatCurrency(netAmount)}</strong></p>${startDate||endDate?`<p>الفترة: ${startDate?'من '+formatDate(startDate):''} ${endDate?'إلى '+formatDate(endDate):''}</p>`:''}`;
-            if(projects.length===1){ const proj=projects[0]; const budget=proj.budget||0; const received=data.revenues.filter(r=>r.projectId===proj.id).reduce((s,r)=>s+r.amount,0); document.getElementById('project-total-value-display').textContent=formatCurrency(budget); document.getElementById('project-received-display').textContent=formatCurrency(received); document.getElementById('project-remaining-display').textContent=formatCurrency(budget-received); document.getElementById('project-total-info').style.display='block'; } else document.getElementById('project-total-info').style.display='none';
-            const tbody=document.getElementById('statement-details'); tbody.innerHTML=''; let balance=0, totalDebit=0, totalCredit=0;
-            transactions.forEach(t=>{ if(t.type==='revenue'){ balance+=t.amount; totalCredit+=t.amount; } else{ balance-=t.amount; totalDebit+=t.amount; } const row=tbody.insertRow(); row.innerHTML=`<td>${formatDate(t.date)}</td><td>${t.type==='revenue'?(t.invoice||'-'):'-'}</td><td>${t.type==='expense'?('EXP-'+t.id):'-'}</td><td>${t.projectName}</td><td>${t.description||(t.type==='revenue'?'إيراد':t.category||'مصروف')}</td><td>${t.type==='expense'?formatCurrency(t.amount):'0.000'}</td><td>${t.type==='revenue'?formatCurrency(t.amount):'0.000'}</td><td>${formatCurrency(balance)}</td>`; });
-            const tfoot=document.getElementById('statement-totals'); tfoot.innerHTML=`<tr><td style="text-align:right; font-weight:bold;">الإجمالي</td><td></td><td></td><td></td><td></td><td>${formatCurrency(totalDebit)}</td><td>${formatCurrency(totalCredit)}</td><td>${formatCurrency(balance)}</td></tr>`;
+            let trans=[];
+            projects.forEach(proj=>{ data.revenues.filter(r=>r.projectId===proj.id).forEach(r=>trans.push({...r,projectName:proj.name,type:'revenue'})); data.expenses.filter(e=>e.projectId===proj.id).forEach(e=>trans.push({...e,projectName:proj.name,type:'expense'})); });
+            if(sd) trans=trans.filter(t=>t.date>=sd); if(ed) trans=trans.filter(t=>t.date<=ed);
+            trans.sort((a,b)=>new Date(a.date)-new Date(b.date));
+            const totalRev=trans.filter(t=>t.type==='revenue').reduce((s,r)=>s+r.amount,0);
+            const totalExp=trans.filter(t=>t.type==='expense').reduce((s,e)=>s+e.amount,0);
+            document.getElementById('statement-summary').innerHTML=`<h4>ملخص كشف الحساب: ${cust||projN}</h4><p>عدد المشاريع: ${projects.length}</p><p>إجمالي الإيرادات: ${formatCurrency(totalRev)}</p><p>إجمالي المصروفات: ${formatCurrency(totalExp)}</p><p>صافي المبلغ: ${formatCurrency(totalRev-totalExp)}</p>${sd||ed?`<p>الفترة: ${sd?'من '+formatDate(sd):''} ${ed?'إلى '+formatDate(ed):''}</p>`:''}`;
+            if(projects.length===1){ const p=projects[0]; const rec=data.revenues.filter(r=>r.projectId===p.id).reduce((s,r)=>s+r.amount,0); document.getElementById('project-total-value-display').textContent=formatCurrency(p.budget||0); document.getElementById('project-received-display').textContent=formatCurrency(rec); document.getElementById('project-remaining-display').textContent=formatCurrency((p.budget||0)-rec); document.getElementById('project-total-info').style.display='block'; } else document.getElementById('project-total-info').style.display='none';
+            const tbody=document.getElementById('statement-details'); tbody.innerHTML=''; let bal=0, totalDebit=0, totalCredit=0;
+            trans.forEach(t=>{ if(t.type==='revenue'){ bal+=t.amount; totalCredit+=t.amount; } else{ bal-=t.amount; totalDebit+=t.amount; } const r=tbody.insertRow(); r.innerHTML=`<tr><td>${formatDate(t.date)}</td><td>${t.type==='revenue'?(t.invoice||'-'):'-'}</td><td>${t.type==='expense'?('EXP-'+t.id):'-'}</td><td>${t.projectName}</td><td>${t.description||(t.type==='revenue'?'إيراد':t.category||'مصروف')}</td><td>${t.type==='expense'?formatCurrency(t.amount):'0.000'}</td><td>${t.type==='revenue'?formatCurrency(t.amount):'0.000'}</td><td>${formatCurrency(bal)}</td></tr>`; });
+            document.getElementById('statement-totals').innerHTML=`<tr><td colspan="5" style="text-align:left;"><strong>الإجمالي</strong></td><td>${formatCurrency(totalDebit)}</td><td>${formatCurrency(totalCredit)}</td><td>${formatCurrency(bal)}</td></tr>`;
         }
         
         // Report
         function generateReport(){
-            const projectName=document.getElementById('report-project').value;
-            if(!projectName){ alert('اختر مشروع'); return; }
-            const proj=data.projects.find(p=>p.name===projectName);
-            if(!proj){ alert('مشروع غير موجود'); return; }
-            const revenues=data.revenues.filter(r=>r.projectId===proj.id);
-            const expenses=data.expenses.filter(e=>e.projectId===proj.id);
-            const totalRev=revenues.reduce((s,r)=>s+r.amount,0);
-            const totalExp=expenses.reduce((s,e)=>s+e.amount,0);
-            const net=totalRev-totalExp;
-            const percent=totalRev?((net/totalRev)*100).toFixed(2):0;
-            const remaining=(proj.budget||0)-totalRev;
-            document.getElementById('report-project-name').textContent=proj.name;
-            document.getElementById('report-project-total').textContent=formatCurrency(proj.budget||0);
-            document.getElementById('report-total-revenues').textContent=formatCurrency(totalRev);
-            document.getElementById('report-total-expenses').textContent=formatCurrency(totalExp);
-            document.getElementById('report-net-profit').textContent=formatCurrency(net);
-            document.getElementById('report-net-profit').className=net>=0?'report-value positive':'report-value negative';
-            document.getElementById('report-profit-percentage').textContent=percent+'%';
-            document.getElementById('report-remaining-amount').textContent=formatCurrency(remaining);
-            document.getElementById('report-project-status').textContent=proj.status||'جاري';
-            const revTbody=document.getElementById('report-revenues-details'); revTbody.innerHTML='';
-            revenues.forEach(r=>revTbody.insertRow().innerHTML=`<td>${formatDate(r.date)}</td><td>${formatCurrency(r.amount)}</td><td>${r.invoice||'-'}</td><td>${r.description||'-'}</td>`);
-            const expTbody=document.getElementById('report-expenses-details'); expTbody.innerHTML='';
-            expenses.forEach(e=>expTbody.insertRow().innerHTML=`<td>${formatDate(e.date)}</td><td>${formatCurrency(e.amount)}</td><td>${e.category||'-'}</td><td>${e.description||'-'}</td>`);
+            const pn=document.getElementById('report-project').value; if(!pn){ alert('اختر مشروع'); return; }
+            const proj=data.projects.find(p=>p.name===pn); if(!proj){ alert('مشروع غير موجود'); return; }
+            const revs=data.revenues.filter(r=>r.projectId===proj.id), exps=data.expenses.filter(e=>e.projectId===proj.id);
+            const totalRev=revs.reduce((s,r)=>s+r.amount,0), totalExp=exps.reduce((s,e)=>s+e.amount,0), net=totalRev-totalExp, percent=totalRev?((net/totalRev)*100).toFixed(2):0, remain=(proj.budget||0)-totalRev;
+            const gridHtml = `
+                <div class="summary-item"><div class="summary-label">إجمالي قيمة المشروع</div><div class="summary-value">${formatCurrency(proj.budget||0)}</div></div>
+                <div class="summary-item"><div class="summary-label">إجمالي الإيرادات</div><div class="summary-value">${formatCurrency(totalRev)}</div></div>
+                <div class="summary-item"><div class="summary-label">إجمالي المصروفات</div><div class="summary-value">${formatCurrency(totalExp)}</div></div>
+                <div class="summary-item"><div class="summary-label">صافي الربح/الخسارة</div><div class="summary-value ${net>=0?'positive':'negative'}">${formatCurrency(net)}</div></div>
+                <div class="summary-item"><div class="summary-label">نسبة الربح</div><div class="summary-value">${percent}%</div></div>
+                <div class="summary-item"><div class="summary-label">المبلغ المتبقي</div><div class="summary-value">${formatCurrency(remain)}</div></div>
+                <div class="summary-item"><div class="summary-label">حالة المشروع</div><div class="summary-value">${proj.status||'جاري'}</div></div>
+            `;
+            document.getElementById('report-summary-grid').innerHTML = gridHtml;
+            const revT=document.getElementById('report-revenues-details'); revT.innerHTML=''; revs.forEach(r=>revT.insertRow().innerHTML=`<td>${formatDate(r.date)}</td><td>${formatCurrency(r.amount)}</td><td>${r.invoice||'-'}</td><td>${r.description||'-'}</td>`);
+            const expT=document.getElementById('report-expenses-details'); expT.innerHTML=''; exps.forEach(e=>expT.insertRow().innerHTML=`<td>${formatDate(e.date)}</td><td>${formatCurrency(e.amount)}</td><td>${e.category||'-'}</td><td>${e.description||'-'}</td>`);
+            document.getElementById('revenues-total-foot').innerHTML = `<tr style="background:#f0f0f0; font-weight:bold;"><td colspan="1"><strong>الإجمالي</strong></td><td><strong>${formatCurrency(totalRev)}</strong></td><td></td><td></td></tr>`;
+            document.getElementById('expenses-total-foot').innerHTML = `<tr style="background:#f0f0f0; font-weight:bold;"><td colspan="1"><strong>الإجمالي</strong></td><td><strong>${formatCurrency(totalExp)}</strong></td><td></td><td></td></tr>`;
+            document.getElementById('net-profit-summary').innerHTML = `<strong>صافي الربح / الخسارة :</strong> ${formatCurrency(net)} <span class="${net>=0?'positive':'negative'}">(${net>=0?'ربح':'خسارة'})</span>`;
             document.getElementById('report-results').style.display='block';
         }
-        
-        // PDF Multi-page using canvas splitting
-        async function saveCustomerStatementPDF() {
-            if(!window.jspdf){ alert('مكتبة PDF غير محملة'); return; }
-            const customerName=document.getElementById('statement-customer').value||'غير محدد';
-            const projectName=document.getElementById('statement-project').value||'جميع المشاريع';
-            const startDate=document.getElementById('statement-start-date').value;
-            const endDate=document.getElementById('statement-end-date').value;
-            const printDate=new Date().toISOString().split('T')[0];
-            document.getElementById('pdf-customer-name').textContent=customerName;
-            document.getElementById('pdf-project-name').textContent=projectName;
-            document.getElementById('pdf-start-date').textContent=formatDate(startDate);
-            document.getElementById('pdf-end-date').textContent=formatDate(endDate);
-            document.getElementById('pdf-print-date').textContent=formatDate(printDate);
-            document.getElementById('pdf-summary').innerHTML=document.getElementById('statement-summary').innerHTML;
-            const projInfo=document.getElementById('project-total-info');
-            if(projInfo.style.display==='block'){
-                document.getElementById('pdf-project-total-info').style.display='block';
-                document.getElementById('pdf-project-total-value').textContent=document.getElementById('project-total-value-display').textContent;
-                document.getElementById('pdf-project-received').textContent=document.getElementById('project-received-display').textContent;
-                document.getElementById('pdf-project-remaining').textContent=document.getElementById('project-remaining-display').textContent;
-            } else document.getElementById('pdf-project-total-info').style.display='none';
-            const tableBody=document.getElementById('pdf-table-body'); tableBody.innerHTML='';
-            document.querySelectorAll('#statement-details tr').forEach(row=>{ const nr=tableBody.insertRow(); for(let i=0;i<row.cells.length;i++){ const c=nr.insertCell(i); c.style.border='1px solid #000'; c.style.padding='4px'; c.textContent=row.cells[i].textContent; } });
-            const totalsRow=document.querySelector('#statement-totals tr');
-            if(totalsRow){ const tfoot=document.getElementById('pdf-table-totals'); tfoot.innerHTML=''; const nr=tfoot.insertRow(); for(let i=0;i<totalsRow.cells.length;i++){ const c=nr.insertCell(i); c.style.border='1px solid #000'; c.style.padding='4px'; c.style.fontWeight='bold'; c.textContent=totalsRow.cells[i].textContent; } }
-            const clone=document.getElementById('pdf-template').cloneNode(true);
-            clone.style.position='absolute'; clone.style.left='-10000px'; clone.style.top='0'; clone.style.display='block'; clone.style.width='794px'; clone.style.backgroundColor='white';
-            document.body.appendChild(clone);
-            try {
-                const canvas = await html2canvas(clone, { scale: 2, useCORS: true, logging: false });
-                const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4');
-                const imgWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                let heightLeft = canvas.height;
-                let position = 0;
-                let pageNum = 1;
-                while (heightLeft > 0) {
-                    const canvasPage = document.createElement('canvas');
-                    const ctx = canvasPage.getContext('2d');
-                    const pageCanvasHeight = Math.min(heightLeft, pageHeight * (canvas.width / imgWidth)); // scale height
-                    canvasPage.width = canvas.width;
-                    canvasPage.height = pageCanvasHeight;
-                    ctx.drawImage(canvas, 0, position, canvas.width, pageCanvasHeight, 0, 0, canvas.width, pageCanvasHeight);
-                    const pageImgData = canvasPage.toDataURL('image/jpeg', 0.95);
-                    if (pageNum > 1) pdf.addPage();
-                    pdf.addImage(pageImgData, 'JPEG', 0, 0, imgWidth, (pageCanvasHeight * imgWidth) / canvas.width);
-                    heightLeft -= pageCanvasHeight;
-                    position += pageCanvasHeight;
-                    pageNum++;
-                }
-                pdf.save(`كشف_حساب_${customerName.replace(/[^\w]/g,'')}.pdf`);
-            } catch(e){ alert('خطأ: '+e.message); } finally{ document.body.removeChild(clone); }
-        }
-        
+
+        // ==========================================
+        // التحديث الذكي لتصدير الـ PDF بمكتباتك الأصلية 
+        // وتقسيم الصفحات لتجنب قطع الأسطر
+        // ==========================================
+
         async function exportReportPDF() {
             if(!window.jspdf){ alert('مكتبة PDF غير محملة'); return; }
-            const projectName=document.getElementById('report-project').value;
-            if(!projectName){ alert('اختر مشروع'); return; }
-            document.getElementById('pdf-report-project-name').textContent=projectName;
-            document.getElementById('pdf-report-date').textContent=formatDate(new Date().toISOString().split('T')[0]);
-            const summaryClone=document.querySelector('.report-card').cloneNode(true);
-            document.getElementById('pdf-report-summary').innerHTML=summaryClone.innerHTML;
-            const revBody=document.getElementById('pdf-report-revenues-body'); revBody.innerHTML='';
-            document.querySelectorAll('#report-revenues-details tr').forEach(row=>{ const nr=revBody.insertRow(); for(let i=0;i<row.cells.length;i++){ const c=nr.insertCell(i); c.style.border='1px solid #000'; c.style.padding='4px'; c.textContent=row.cells[i].textContent; } });
-            const expBody=document.getElementById('pdf-report-expenses-body'); expBody.innerHTML='';
-            document.querySelectorAll('#report-expenses-details tr').forEach(row=>{ const nr=expBody.insertRow(); for(let i=0;i<row.cells.length;i++){ const c=nr.insertCell(i); c.style.border='1px solid #000'; c.style.padding='4px'; c.textContent=row.cells[i].textContent; } });
-            const clone=document.getElementById('pdf-report-template').cloneNode(true);
-            clone.style.position='absolute'; clone.style.left='-10000px'; clone.style.top='0'; clone.style.display='block'; clone.style.width='794px'; clone.style.backgroundColor='white';
-            document.body.appendChild(clone);
+            const pn=document.getElementById('report-project').value; if(!pn){ alert('اختر مشروع'); return; }
+            const proj=data.projects.find(p=>p.name===pn); if(!proj){ alert('مشروع غير موجود'); return; }
+            
+            const revs=data.revenues.filter(r=>r.projectId===proj.id);
+            const exps=data.expenses.filter(e=>e.projectId===proj.id);
+            const totalRev=revs.reduce((s,r)=>s+r.amount,0);
+            const totalExp=exps.reduce((s,e)=>s+e.amount,0);
+            const net=totalRev-totalExp;
+            const percent=totalRev?((net/totalRev)*100).toFixed(2):0;
+            const remain=(proj.budget||0)-totalRev;
+
+            // إنشاء حاوية مخفية للصفحات
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '-9999px'; // إخفاء خارج الشاشة لمنع ظهور شاشة بيضاء
+            container.style.width = '794px';
+            container.style.background = '#ffffff';
+            container.style.direction = 'rtl';
+            container.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            document.body.appendChild(container);
+
+            let currentPage;
+            const safeHeight = 1100; // الارتفاع الآمن للصفحة قبل القص
+
+            function createPage() {
+                const p = document.createElement('div');
+                p.style.width = '794px';
+                p.style.padding = '30px';
+                p.style.background = '#ffffff';
+                p.style.boxSizing = 'border-box';
+                container.appendChild(p);
+                return p;
+            }
+
+            const headerHtml = `
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="https://i.postimg.cc/JnHWjhkL/logo2.png" style="width:60px; border-radius:50%;">
+                    <h2 style="color:#d32f2f; margin:10px 0;">شركة المحاسنة لتشييد المباني</h2>
+                    <h3>تقرير أرباح المشروع</h3>
+                    <div style="border-bottom:1px solid #ccc; margin:15px 0;"></div>
+                    <div style="display:flex; justify-content:space-between; margin:10px 0; font-size:14px;">
+                        <div><strong>المشروع:</strong> ${proj.name}</div>
+                        <div><strong>تاريخ التقرير:</strong> ${formatDate(new Date().toISOString().split('T')[0])}</div>
+                    </div>
+                </div>
+            `;
+
+            const summaryHtml = `
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin:15px 0; text-align:center;">
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>إجمالي المشروع</strong><br><span style="font-size:1.1rem; color:#d32f2f; font-weight:bold;">${formatCurrency(proj.budget||0)}</span></div>
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>إجمالي الإيرادات</strong><br><span style="font-size:1.1rem; color:#d32f2f; font-weight:bold;">${formatCurrency(totalRev)}</span></div>
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>إجمالي المصروفات</strong><br><span style="font-size:1.1rem; color:#d32f2f; font-weight:bold;">${formatCurrency(totalExp)}</span></div>
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>صافي الربح</strong><br><span style="font-size:1.1rem; font-weight:bold; color:${net>=0?'#28a745':'#dc3545'};">${formatCurrency(net)}</span></div>
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>نسبة الربح</strong><br><span style="font-size:1.1rem; color:#d32f2f; font-weight:bold;">${percent}%</span></div>
+                    <div style="flex:1 1 30%; background:#f8fbff; padding:12px; border-radius:8px; border: 1px solid #eee; border-right:4px solid #d32f2f;"><strong>المتبقي</strong><br><span style="font-size:1.1rem; color:#d32f2f; font-weight:bold;">${formatCurrency(remain)}</span></div>
+                </div>
+            `;
+
+            currentPage = createPage();
+            currentPage.innerHTML = headerHtml + summaryHtml;
+
+            function addTableWithPagination(title, dataRows, type, total) {
+                let tableWrap = document.createElement('div');
+                let tableHtml = `<h3 style="color:#d32f2f; margin-top:20px;">${title}</h3><table style="width:100%; border-collapse:collapse; text-align:right; font-size:13px; margin-top:10px;"><thead><tr style="background:#d32f2f; color:white;"><th style="padding:8px; border:1px solid #ccc;">التاريخ</th><th style="padding:8px; border:1px solid #ccc;">المبلغ</th><th style="padding:8px; border:1px solid #ccc;">${type==='rev'?'رقم الفاتورة':'نوع المصروف'}</th><th style="padding:8px; border:1px solid #ccc;">البيان</th></tr></thead><tbody></tbody><tfoot></tfoot></table>`;
+                tableWrap.innerHTML = tableHtml;
+                currentPage.appendChild(tableWrap);
+                let tbody = tableWrap.querySelector('tbody');
+
+                dataRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td style="padding:8px; border:1px solid #ccc;">${formatDate(row.date)}</td><td style="padding:8px; border:1px solid #ccc;">${formatCurrency(row.amount)}</td><td style="padding:8px; border:1px solid #ccc;">${type==='rev'?(row.invoice||'-'):(row.category||'-')}</td><td style="padding:8px; border:1px solid #ccc;">${row.description||'-'}</td>`;
+                    tbody.appendChild(tr);
+
+                    if (currentPage.offsetHeight > safeHeight) {
+                        tbody.removeChild(tr); // تراجع عن إضافة السطر
+                        currentPage = createPage();
+                        tableWrap = document.createElement('div');
+                        tableWrap.innerHTML = tableHtml.replace(title, title + ' (يتبع)');
+                        currentPage.appendChild(tableWrap);
+                        tbody = tableWrap.querySelector('tbody');
+                        tbody.appendChild(tr); // أضفه في الصفحة الجديدة
+                    }
+                });
+
+                // إضافة الإجمالي
+                let tfoot = tableWrap.querySelector('tfoot');
+                const tfootTr = document.createElement('tr');
+                tfootTr.style.background = '#f0f0f0';
+                tfootTr.style.fontWeight = 'bold';
+                tfootTr.innerHTML = `<td style="padding:8px; border:1px solid #ccc;">الإجمالي</td><td style="padding:8px; border:1px solid #ccc;">${formatCurrency(total)}</td><td colspan="2" style="padding:8px; border:1px solid #ccc;"></td>`;
+                tfoot.appendChild(tfootTr);
+
+                if (currentPage.offsetHeight > safeHeight) {
+                    tfoot.removeChild(tfootTr);
+                    currentPage = createPage();
+                    tableWrap = document.createElement('div');
+                    tableWrap.innerHTML = tableHtml.replace(title, title + ' (تكملة)');
+                    currentPage.appendChild(tableWrap);
+                    tableWrap.querySelector('tfoot').appendChild(tfootTr);
+                }
+            }
+
+            addTableWithPagination('تفاصيل الإيرادات', revs, 'rev', totalRev);
+            addTableWithPagination('تفاصيل المصروفات', exps, 'exp', totalExp);
+
+            const netProfitDiv = document.createElement('div');
+            netProfitDiv.innerHTML = `<div style="margin-top:20px; padding:15px; background:#eef; border-radius:8px; text-align:center; font-size:1.2rem; border:1px solid #ccc;"><strong>صافي الربح / الخسارة :</strong> ${formatCurrency(net)} <span style="color:${net>=0?'#28a745':'#dc3545'}; font-weight:bold;">(${net>=0?'ربح':'خسارة'})</span></div>`;
+            currentPage.appendChild(netProfitDiv);
+
+            if (currentPage.offsetHeight > safeHeight) {
+                currentPage.removeChild(netProfitDiv);
+                currentPage = createPage();
+                currentPage.appendChild(netProfitDiv);
+            }
+
+            // تحويل الصفحات إلى PDF
             try {
-                const canvas = await html2canvas(clone, { scale: 2, useCORS: true, logging: false });
-                const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4');
                 const imgWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                let heightLeft = canvas.height;
-                let position = 0;
-                let pageNum = 1;
-                while (heightLeft > 0) {
-                    const canvasPage = document.createElement('canvas');
-                    const ctx = canvasPage.getContext('2d');
-                    const pageCanvasHeight = Math.min(heightLeft, pageHeight * (canvas.width / imgWidth));
-                    canvasPage.width = canvas.width;
-                    canvasPage.height = pageCanvasHeight;
-                    ctx.drawImage(canvas, 0, position, canvas.width, pageCanvasHeight, 0, 0, canvas.width, pageCanvasHeight);
-                    const pageImgData = canvasPage.toDataURL('image/jpeg', 0.95);
-                    if (pageNum > 1) pdf.addPage();
-                    pdf.addImage(pageImgData, 'JPEG', 0, 0, imgWidth, (pageCanvasHeight * imgWidth) / canvas.width);
-                    heightLeft -= pageCanvasHeight;
-                    position += pageCanvasHeight;
-                    pageNum++;
+                const pages = Array.from(container.children);
+                
+                for (let i = 0; i < pages.length; i++) {
+                    const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
                 }
-                pdf.save(`تقرير_${projectName.replace(/[^\w]/g,'')}.pdf`);
-            } catch(e){ alert('خطأ: '+e.message); } finally{ document.body.removeChild(clone); }
+                pdf.save(`تقرير_${proj.name.replace(/[^\w]/g, '')}.pdf`);
+            } catch (e) {
+                alert('حدث خطأ أثناء التصدير: ' + e.message);
+            } finally {
+                document.body.removeChild(container);
+            }
+        }
+
+        async function saveCustomerStatementPDF() {
+            if(!window.jspdf){ alert('مكتبة PDF غير محملة'); return; }
+            
+            const cust=document.getElementById('statement-customer').value||'غير محدد';
+            const projN=document.getElementById('statement-project').value||'جميع المشاريع';
+            const sd=document.getElementById('statement-start-date').value;
+            const ed=document.getElementById('statement-end-date').value;
+            
+            // جلب البيانات من الجدول الظاهر
+            const statementRows = Array.from(document.querySelectorAll('#statement-details tr'));
+            if (statementRows.length === 0) { alert('لا توجد بيانات لتصديرها'); return; }
+
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '0';
+            container.style.left = '-9999px';
+            container.style.width = '794px';
+            container.style.background = '#ffffff';
+            container.style.direction = 'rtl';
+            container.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            document.body.appendChild(container);
+
+            let currentPage;
+            const safeHeight = 1100;
+
+            function createPage() {
+                const p = document.createElement('div');
+                p.style.width = '794px';
+                p.style.padding = '30px';
+                p.style.background = '#ffffff';
+                p.style.boxSizing = 'border-box';
+                container.appendChild(p);
+                return p;
+            }
+
+            const pInfo = document.getElementById('project-total-info');
+            let projectTotalsHtml = '';
+            if (pInfo && pInfo.style.display === 'block') {
+                projectTotalsHtml = `
+                    <div style="margin-bottom:15px; background:#f0f8ff; padding:10px; border-radius:5px; border:1px solid #eee;">
+                        <h4 style="margin-bottom:8px;">إجماليات المشروع</h4>
+                        <div style="display:flex; gap:15px; font-weight:bold;">
+                            <div>قيمة المشروع: <span>${document.getElementById('project-total-value-display').textContent}</span></div>
+                            <div>الدفعات المستلمة: <span style="color:#28a745;">${document.getElementById('project-received-display').textContent}</span></div>
+                            <div>المتبقي: <span style="color:#dc3545;">${document.getElementById('project-remaining-display').textContent}</span></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const headerHtml = `
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <img src="https://i.postimg.cc/JnHWjhkL/logo2.png" style="width:60px; border-radius:50%;">
+                    <h2 style="color:#d32f2f; margin: 10px 0 5px 0;">شركة المحاسنة لتشييد المباني</h2>
+                    <h3 style="margin-bottom: 15px;">كشف حساب عميل</h3>
+                    <div style="border-bottom: 1px solid #ddd; margin-bottom: 15px;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
+                    <div><strong>العميل:</strong> ${cust}</div>
+                    <div><strong>المشروع:</strong> ${projN}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;">
+                    <div><strong>الفترة:</strong> من ${formatDate(sd)} إلى ${formatDate(ed)}</div>
+                    <div><strong>تاريخ الطباعة:</strong> ${formatDate(new Date().toISOString().split('T')[0])}</div>
+                </div>
+                <div style="margin-bottom:15px; background:#f8fbff; padding:10px; border-radius:5px; border:1px solid #eee;">
+                    ${document.getElementById('statement-summary').innerHTML}
+                </div>
+                ${projectTotalsHtml}
+            `;
+
+            currentPage = createPage();
+            currentPage.innerHTML = headerHtml;
+
+            let tableWrap = document.createElement('div');
+            let tableHtml = `<table style="width:100%; border-collapse:collapse; font-size:13px; text-align:right; margin-top:15px;"><thead><tr style="background:#d32f2f; color:white;"><th style="padding:8px; border:1px solid #ccc;">التاريخ</th><th style="padding:8px; border:1px solid #ccc;">رقم الفاتورة</th><th style="padding:8px; border:1px solid #ccc;">رقم السند</th><th style="padding:8px; border:1px solid #ccc;">المشروع</th><th style="padding:8px; border:1px solid #ccc;">البيان</th><th style="padding:8px; border:1px solid #ccc;">مدين</th><th style="padding:8px; border:1px solid #ccc;">دائن</th><th style="padding:8px; border:1px solid #ccc;">الرصيد</th></tr></thead><tbody></tbody><tfoot></tfoot></table>`;
+            tableWrap.innerHTML = tableHtml;
+            currentPage.appendChild(tableWrap);
+            let tbody = tableWrap.querySelector('tbody');
+
+            statementRows.forEach(row => {
+                const tr = document.createElement('tr');
+                for(let i=0; i<row.cells.length; i++){
+                    const td = document.createElement('td');
+                    td.style.padding = '8px';
+                    td.style.border = '1px solid #ccc';
+                    td.textContent = row.cells[i].textContent;
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+
+                if (currentPage.offsetHeight > safeHeight) {
+                    tbody.removeChild(tr);
+                    currentPage = createPage();
+                    tableWrap = document.createElement('div');
+                    tableWrap.innerHTML = tableHtml;
+                    currentPage.appendChild(tableWrap);
+                    tbody = tableWrap.querySelector('tbody');
+                    tbody.appendChild(tr);
+                }
+            });
+
+            // إضافة صف الإجمالي
+            const totRow = document.querySelector('#statement-totals tr');
+            if (totRow) {
+                let tfoot = tableWrap.querySelector('tfoot');
+                const tfootTr = document.createElement('tr');
+                for(let i=0; i<totRow.cells.length; i++){
+                    const td = document.createElement('td');
+                    td.style.padding = '8px';
+                    td.style.border = '1px solid #ccc';
+                    td.style.fontWeight = 'bold';
+                    td.style.backgroundColor = '#f0f0f0';
+                    if(totRow.cells[i].colSpan > 1) {
+                        td.colSpan = totRow.cells[i].colSpan;
+                        td.style.textAlign = 'right';
+                    }
+                    td.textContent = totRow.cells[i].textContent;
+                    tfootTr.appendChild(td);
+                }
+                tfoot.appendChild(tfootTr);
+
+                if (currentPage.offsetHeight > safeHeight) {
+                    tfoot.removeChild(tfootTr);
+                    currentPage = createPage();
+                    tableWrap = document.createElement('div');
+                    tableWrap.innerHTML = tableHtml;
+                    currentPage.appendChild(tableWrap);
+                    tableWrap.querySelector('tfoot').appendChild(tfootTr);
+                }
+            }
+
+            try {
+                const pdf = new window.jspdf.jsPDF('p', 'pt', 'a4');
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const pages = Array.from(container.children);
+                
+                for (let i = 0; i < pages.length; i++) {
+                    const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                }
+                pdf.save(`كشف_حساب_${cust.replace(/[^\w]/g,'')}.pdf`);
+            } catch (e) {
+                alert('حدث خطأ أثناء التصدير: ' + e.message);
+            } finally {
+                document.body.removeChild(container);
+            }
         }
         
         // Backup
-        function exportBackup(){ const backupData={...data,exportDate:new Date().toISOString(),systemName:'شركة المحاسنة'}; const dataStr=JSON.stringify(backupData,null,2); const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(dataStr); a.download=`نسخة_احتياطية_${new Date().toISOString().split('T')[0]}.json`; a.click(); showAlert('تم التصدير','success','backup-alert'); }
-        function handleFileSelect(e){ const file=e.target.files[0]; if(!file) return; document.getElementById('selected-file-name').textContent=`الملف: ${file.name}`; document.getElementById('restore-backup').disabled=false; }
-        function restoreBackup(){
-            const fileInput=document.getElementById('restore-file'); if(!fileInput.files.length){ alert('اختر ملفاً'); return; }
-            const reader=new FileReader();
-            reader.onload=function(ev){ try{ const backupData=JSON.parse(ev.target.result); if(!backupData.projects||!backupData.revenues||!backupData.expenses||!backupData.customers){ alert('ملف غير صالح'); return; } if(confirm('استبدال البيانات الحالية؟')){ data=backupData; saveData(); renderProjects(); renderRevenues(); renderExpenses(); renderCustomers(); updateDashboardStats(); updateBackupStats(); showAlert('تمت الاستعادة','success','backup-alert'); document.getElementById('selected-file-name').textContent=''; document.getElementById('restore-backup').disabled=true; fileInput.value=''; } } catch(err){ alert('خطأ في قراءة الملف'); } };
-            reader.readAsText(fileInput.files[0]);
-        }
+        function exportBackup(){ const bk={...data,exportDate:new Date().toISOString()}; const a=document.createElement('a'); a.href='data:application/json,'+encodeURIComponent(JSON.stringify(bk,null,2)); a.download=`نسخة_احتياطية_${new Date().toISOString().split('T')[0]}.json`; a.click(); showAlert('تم التصدير','success','backup-alert'); }
+        function handleFileSelect(e){ document.getElementById('selected-file-name').textContent=`الملف: ${e.target.files[0]?.name}`; document.getElementById('restore-backup').disabled=false; }
+        function restoreBackup(){ const f=document.getElementById('restore-file').files[0]; if(!f){ alert('اختر ملفاً'); return; } const r=new FileReader(); r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!d.projects||!d.revenues||!d.expenses||!d.customers) throw new Error(); if(confirm('استبدال البيانات الحالية؟')){ data=d; saveData(); renderProjects(); renderRevenues(); renderExpenses(); renderCustomers(); updateDashboardStats(); updateBackupStats(); showAlert('تمت الاستعادة','success','backup-alert'); document.getElementById('selected-file-name').textContent=''; document.getElementById('restore-backup').disabled=true; document.getElementById('restore-file').value=''; } } catch(err){ alert('ملف غير صالح'); } }; r.readAsText(f); }
         function deleteAllData(){ if(confirm('حذف جميع البيانات؟ لا يمكن التراجع.')){ if(confirm('تأكيد الحذف النهائي؟')){ data={projects:[],revenues:[],expenses:[],customers:[]}; saveData(); renderProjects(); renderRevenues(); renderExpenses(); renderCustomers(); updateDashboardStats(); updateBackupStats(); showAlert('تم الحذف','success','backup-alert'); } } }
         
-        // Event Listeners
         function setupEventListeners(){
             document.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',e=>{ e.preventDefault(); showTab(link.dataset.tab); }));
             document.getElementById('project-form').addEventListener('submit',saveProject);
@@ -573,9 +721,9 @@
             document.getElementById('report-project').addEventListener('input',function(){ searchProjects(this.value,'report-project-search-results'); });
             document.addEventListener('click',e=>{ if(!e.target.closest('.search-container')) document.querySelectorAll('.search-results').forEach(el=>el.style.display='none'); });
         }
-        function showTab(tabId){ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(tabId==='dashboard') updateDashboardStats(); if(tabId==='backup') updateBackupStats(); }
+        function showTab(tabId){ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.getElementById(tabId).classList.add('active'); document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active')); document.querySelector(`nav a[data-tab="${tabId}"]`).classList.add('active'); if(tabId==='dashboard') updateDashboardStats(); if(tabId==='backup') updateBackupStats(); }
         
-        document.addEventListener('DOMContentLoaded',()=>{ loadData(); setupEventListeners(); showTab('dashboard'); renderProjects(); renderRevenues(); renderExpenses(); renderCustomers(); updateDashboardStats(); updateBackupStats(); });
+        document.addEventListener('DOMContentLoaded',()=>{ loadData(); setupEventListeners(); showTab('dashboard'); renderProjects(); renderRevenues(); renderExpenses(); renderCustomers(); updateDashboardStats(); updateBackupStats(); setDefaultDates(); });
     </script>
 </body>
 </html>
